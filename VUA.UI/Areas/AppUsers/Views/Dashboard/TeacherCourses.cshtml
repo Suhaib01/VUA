@@ -1,0 +1,35 @@
+﻿@model VUA.Core.Models.Course
+@if (ViewBag.InsCourse != null)
+{
+    <div class="container-fluid mt-2 d-flex justify-content-center align-items-center">
+        <div class="row">
+            <div class="col-lg-12">
+
+
+                @foreach (var course in ViewBag.InsCourse)
+                {
+                    <form method="get" asp-action="CreateCourseContant">
+                        <div class="card  mt-4 mb-4" style="height:170px">
+                            <div class="card-body" style="height:450px; width:700px">
+                                <h2 class="mb-0 text-bold">@course.CourseName</h2>
+                                <p class="text-sm">@course.CourseDescription</p>
+                                <hr class="dark horizontal">
+                            </div>
+                            <input type="hidden" asp-for="CourseId" value="@course.CourseId">
+                            <div class="card-footer">
+                                <input type="submit" class="btn btn-outline-primary btn-block" value="Build Course" />
+                            </div>
+                        </div>
+                    </form>
+
+                }
+
+
+            </div>
+        </div>
+    </div>
+}else
+{
+<div class="alert alert-primary mb-14 text-light">No Course Added yet <a class="btn btn-success" asp-action="AddCourse"> Click here</a> to add.</div>
+}
+

@@ -1,0 +1,34 @@
+﻿@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/LoginRegister.css/StyleSheet.css" />
+<br />
+<div class="row justify-content-center">
+    <div class="col-10 mt-5 mb-4">
+        <div class="card login-logout-card">
+            <div class="card-body">
+                <div class="row justify-content-center">
+                    <div class="col-12 my-4 ml-5">
+                        @RenderBody()
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        $(function () {
+            const currentPage = location.pathname;
+            $('.nav-tabs li a').each(function () {
+                const $this = $(this);
+                if (currentPage.toLowerCase().indexOf($this.attr('href').toLowerCase()) !== -1) {
+                    $this.addClass('active');
+                }
+            })
+        })
+    </script>
+}
