@@ -13,12 +13,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Areas\Admin\Data\" />
-		<Folder Include="Areas\Admin\Models\" />
-		<Folder Include="Areas\AppUsers\Data\" />
-		<Folder Include="Areas\AppUsers\Models\" />
 
 		<Folder Include="wwwroot\uploads\Courses\" />
+
+		<Folder Include="wwwroot\uploads\Videos\" />
 		<Folder Include="wwwroot\uploads\ProfilsPuctuers\Chenged\" />
 		<Folder Include="wwwroot\uploads\ProfilsPuctuers\Id\" />
 		<Folder Include="wwwroot\uploads\Certificate\" />

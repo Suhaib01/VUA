@@ -24,6 +24,7 @@ namespace VUA.Core.Models
         public string? StudantOrTeacher { get; set; }
         public bool? IsCompleted { get; set; }
         public string? IDFrontImage { get; set; }
+        public string? IsExternal { get; set; }
         public string? IDbackImage { get; set; }
         public bool IsRejectedUser { get; set; }
         [NotMapped]

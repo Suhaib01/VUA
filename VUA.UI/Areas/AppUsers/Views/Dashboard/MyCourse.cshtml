@@ -7,7 +7,7 @@
     ViewData["Title"] = "MyCourse";
     //Layout = "~/Areas/AppUsers/Views/Shared/_CoursesLayout.cshtml";
 }
-@if (Model != null || ViewBag.InsCourse != null)
+@if (Model != null )
 {
     <div class="container-fluid mt-2 d-flex justify-content-center align-items-center">
         <div class="row">
@@ -34,7 +34,7 @@
                     @foreach (var course in Model!)
                     {
                         var teatcher = _usermanger.FindByIdAsync(course.Course!.InstructorId!).Result;
-                        <form method="post" asp-action="CoursePage">
+
                             <div class="card  mt-4 mb-4" style="height:350px">
                                 <div class="card-header">
                                     <h6 class="mb-0 text-bold">@course.Course!.CourseName</h6>
@@ -45,7 +45,7 @@
                                 <div class="card-body" style="height:750px; width:700px">
                                     <h4>Teacher</h4>
                                     <hr class="dark horizontal">
-                                    <a asp-action="viewPImg">
+                                    <a asp-action="">
                                         <img src="@teatcher!.ProfileImage" alt="avatar"
                                              class="rounded-circle img-fluid" style="width: 75px; height:75px">
                                     </a>
@@ -53,12 +53,19 @@
                                     
                                 </div>
                                 <div class="card-footer">
-                                    <input asp-for="@course.CourseId" type="hidden" value="@course.CourseId" />
-                                    <a asp-action="DropeCourse" asp-route-id="@course.CourseId" class="btn btn-outline-primary">Drop Course</a>
+
+
+                                    <a asp-action="DropCourse" asp-route-courseId="@course.CourseId" class="btn btn-outline-danger">Drop</a>
                                     <a asp-action="Contant" asp-route-id="@course.CourseId" class="btn btn-primary">Continue →</a>
+                               
+
+
+                                    
+                               
+
                                 </div>
                             </div>
-                        </form>
+
                     }
                 }
             </div>
@@ -69,64 +76,3 @@ else
 {
     <div class="alert alert-primary mb-14 text-light">No Course Added yet <a class="btn btn-success" asp-action="AddCourse"> Click here</a> to add.</div>
 }
-
-
-@if (ViewBag.DropeCourse != null)
-        {
-            <div id="overlay"></div>
-            <div id="floating-screen" class="page-header">
-                <h4>Are you sure ?</h4>
-        <form class="form-inline" asp-action="DropeCourse" method="post">
-            <button type="submit" class=" btn btn-danger mt-5 mr-2">Drop</button>
-                    <a asp-action="MyCourse" class="btn btn-success mt-5">cansel</a>
-                </form>
-
-            </div>
-        }
-        
-    
-
-<style>
-    /* Styling for the overlay */
-    #overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0,1); /* Semi-transparent black */
-        z-index: 1; /* Place it above the rest of the content */
-        display: none; /* Initially hidden */
-    }
-
-    /* Styling for the floating screen */
-    #floating-screen {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        height: 160px;
-        width: 500px;
-        background-color: white;
-        border: 1px solid #ccc;
-        padding: 20px;
-        z-index: 2; /* Place it above the overlay */
-        display: none; /* Initially hidden */
-    }
-
-</style>
-<script>
-    function openFloatingScreen() {
-        document.getElementById('overlay').style.display = 'block';
-        document.getElementById('floating-screen').style.display = 'block';
-    }
-
-    // Function to close the floating screen and hide the overlay
-    function closeFloatingScreen() {
-        document.getElementById('overlay').style.display = 'none';
-        document.getElementById('floating-screen').style.display = 'none';
-
-    }
-    openFloatingScreen();
-
-</script>

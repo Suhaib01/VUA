@@ -1,10 +1,38 @@
-﻿<!DOCTYPE html>
+﻿@model IEnumerable<VUA.Core.Models.Contact>
+@{
+    ViewData["Title"] = "MESSAGE CENTER";
+    
+}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+@if (Model.Any())
+{
+        <h1>MESSAGES</h1>
+        <br />
+        @foreach (var message in Model)
+        {
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
+            <div class="card">
+                <div class="card-header">
+                    @message.Email
+                </div>
+                <div class="card-body">
+                    @message.Message
+                </div>
+                <div class="card-footer">
+                    <a asp-action="Reply" asp-route-messageId="@message.Id" class="btn btn-warning">Reply</a>
+                    <a asp-action="DeleteMessage" asp-route-id="@message.Id" class="btn btn-danger">Delete</a>
+                </div>
 
-</head>
-<body>
-</body>
-</html>
+
+            </div>
+        <br />
+    }
+
+}
+else
+{
+    <div class="alert alert-dark">
+        There are no Messages here!
+    </div>
+}
+

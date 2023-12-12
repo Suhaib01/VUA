@@ -32,6 +32,7 @@ namespace VUA.UI.Areas.Studant.Controllers
 		private readonly IBaseRepository<CourseWeeks> _courseWeeksRepository;
         private readonly IBaseRepository<Week> _weeksRepository;
         private readonly IWebHostEnvironment _webhostEnvauroment;
+        private readonly SignInManager<AppllicationUser> _signInManager;
 		public DashboardController(IAccountRepositorory accountRepositorory,
             IWebHostEnvironment webHostEnvironment,
 			IUserService userService,
@@ -43,7 +44,8 @@ namespace VUA.UI.Areas.Studant.Controllers
 			IBaseRepository<AppllicationUser> appuserRepository,
 			IBaseRepository<CourseWeeks> courseWeeksRepository,
             IBaseRepository<Week> weekRepository,
-            IWebHostEnvironment webHost)
+            IWebHostEnvironment webHost,
+            SignInManager<AppllicationUser> signInManager)
 		{
 			_webHostEnvironment = webHostEnvironment;
 			_accountRepositorory = accountRepositorory;
@@ -56,6 +58,7 @@ namespace VUA.UI.Areas.Studant.Controllers
 			_courseWeeksRepository = courseWeeksRepository;
             _weeksRepository = weekRepository;
             _webhostEnvauroment = webHost;
+            _signInManager = signInManager;
 		}
 		public IActionResult Index()
         {
@@ -86,19 +89,21 @@ namespace VUA.UI.Areas.Studant.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Teacher")]
+      
         public IActionResult CompleteTeacherProfile()
         {
             
             return View();
         }
         [HttpGet]
+
         public IActionResult CompleteProfile()
         {
             
             return View();
         }
         [HttpPost]
+   
         public async Task<IActionResult> CompleteProfile(CompleteProfileModelView model)
         {
             if(_accountRepositorory.ChekPhoneNumper(model.PhoneNumber!) == true) { ViewBag.err = "● Exist Phone number!"; return View(model); }
@@ -124,7 +129,7 @@ namespace VUA.UI.Areas.Studant.Controllers
 
         }
         [HttpPost]
-        [Authorize(Roles = "Teacher")]
+
         public async Task<IActionResult> CompleteTeacherProfile(CompleatTeacherProfileViewModel model)
         {
             if (_accountRepositorory.ChekPhoneNumper(model.PhoneNumber!) == true) { ViewBag.err = "● Exist Phone number!"; return View(model); }
@@ -215,7 +220,8 @@ namespace VUA.UI.Areas.Studant.Controllers
             var courses = _userService.GetCourses();
             var userId = _userService.GetUserId();
             var userCourses = _userCourseRepository.GetValues("Course").Where(uc => uc.UserId == userId);
-            ViewBag.Course =courses.Where(c=>!userCourses.Any(uc=>uc.CourseId == c.CourseId)&&c.InstructorId!="").ToList();
+          
+            ViewBag.Course =courses.Where(c=>!userCourses.Any(uc=>uc.CourseId == c.CourseId)&&c.InstructorId!=""&& c.InstructorId != null).ToList();
             return View();
         }
         [HttpPost]
@@ -270,11 +276,7 @@ namespace VUA.UI.Areas.Studant.Controllers
             ViewBag.InsCourse = InsCourses;
             return View();
         }
-        [HttpGet]
-        public IActionResult SubCoruses()
-        {
-            return View();
-        }
+
         [Authorize(Roles = "Studant")]
         public IActionResult PaymentHistory()
         {
@@ -303,10 +305,11 @@ namespace VUA.UI.Areas.Studant.Controllers
         }
         [HttpPost]
         [Authorize(Roles = "Teacher")]
-        public  IActionResult CreateCourseContant(CreateCourseContantViewModel model, int id)
+        public async Task<IActionResult> CreateCourseContant(CreateCourseContantViewModel model, int id)
         {
             if (ModelState.IsValid)
             {
+                string folder = "uploads/Videos/";
                 var course = _cousreRepository.Find(id);
                 if (course == null)
                 {
@@ -316,9 +319,9 @@ namespace VUA.UI.Areas.Studant.Controllers
                 {
                     WhatStudantShouldDo = model.WhatStudantShouldDo,
                     EndOfThisWeek = model.EndOfThisWeek,
-                    Subjectfile = model.Subjectfile,
-                    ViduoUrl =  model.ViduoUrl,
-                    WelcomeViduoUrl = model.WelcomeViduoUrl,
+                    Subjectfile = await _accountRepositorory.UploadPowerPoint(model.Subjectfile!, _webHostEnvironment.WebRootPath),
+                    ViduoUrl = await _accountRepositorory.UploadVideo(model.VideoFile!),
+                    Description = model.Description,
                     SubjectName = model.SubjectName
                 };
                 _weeksRepository.Add(ids);
@@ -351,14 +354,47 @@ namespace VUA.UI.Areas.Studant.Controllers
             
         }
         [Authorize(Roles = "Studant")]
-        public IActionResult DropeCourse(int courseId)
+        [HttpGet]
+        public IActionResult DropCourse(int courseId)
         {
-            ViewBag.DropeCourse= _cousreRepository.Find(courseId);
+            var co = _cousreRepository.Find(courseId);
+            return View(co);
+        }
+        [Authorize(Roles = "Studant")]
+        [HttpPost]
+        public IActionResult DropCourseP(int courseId)
+        {
+            var studant = _userManager.FindByEmailAsync(User.Identity!.Name!).Result;
+            _appuserRepository.deleteCourseFromUser(studant!.Id, courseId);
             return RedirectToAction("MyCourse");
         }
+        [HttpGet]
+        [Authorize(Roles = "Teacher")]
+        public IActionResult DeleteWeek(int courseId, int weekId)
+        {
+            var courseWeek = _courseWeeksRepository.GetValues("Week").Where(c => c.CourseId == courseId && c.WeekId==weekId);
+           
+           
+                return View(courseWeek.First());
+           
+            
+        }
+        [HttpPost]
+        [Authorize(Roles = "Teacher")]
+        public IActionResult DeleteWeekP(int courseId, int weekId)
+        {
+            _appuserRepository.deleteWeekFromCourse(weekId, courseId);
+            var courseContant = _courseWeeksRepository.GetValues("Week").Where(c => c.CourseId == courseId);
+            if (courseContant.Any())
+            {
+                return RedirectToAction("Contant", "Dashboard", new { courseId = courseId });
+            }
+            return RedirectToAction("TeacherCourses");
 
-       
-        
+        }
+
+
+
     }
 
 }

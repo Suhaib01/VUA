@@ -9,6 +9,7 @@ namespace VUA.EF.Repositories
     public interface IAccountRepositorory
     {
         //Task<IdentityResult> CreateUserAsync(RegisterViewModel model);
+        Task<string> UploadPowerPoint(IFormFile powerPointFile, string Web);
         Task SignOutAcync();
         Task<AppllicationUser> FindUserByIdAsync(string id);
         Task<AppllicationUser> FindUserByEmailAsync(string email);
@@ -19,6 +20,7 @@ namespace VUA.EF.Repositories
         Task<IdentityResult> CompleteUserProfile(CompleteProfileModelView model, string WRP);
         Task<IdentityResult> CompleteTeacherUserProfile(CompleatTeacherProfileViewModel model, string WRP);
         Task<string> UploadImag(string folderPath, IFormFile file, string WebRootPath);
+        Task<string> UploadVideo(IFormFile model);
         void AddCourse(int courseid);
         Task<IdentityResult> AddUserToRoleAsync(AppllicationUser Studant,string roleName);
         Task<AppllicationUser> GetApplicationUser(ClaimsPrincipal user);

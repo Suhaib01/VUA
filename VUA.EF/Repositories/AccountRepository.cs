@@ -163,56 +163,51 @@ namespace VUA.EF.Repositories
             await file.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
             return "/"+folderPath;
         }
-        //public async Task<string> UploadVideo(string folderPath, IFormFile file, string WebRootPath)
-        //{
-        //    try
-        //    {
-        //        // Check if the file is not null and is valid
-        //        if (file != null && file.Length > 0)
-        //        {
-        //            // Get the file extension
-        //            string fileExtension = Path.GetExtension(file.FileName);
+        public async Task<string> UploadVideo(IFormFile model)
+        {
+            if (model != null && model.Length > 0)
+            {
+                // Generate a unique filename to avoid overwriting existing files
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.FileName);
 
-        //            // Check if it's a valid video file (you can extend this check based on your requirements)
-        //            if (IsVideoFile(fileExtension))
-        //            {
-        //                // Specify the directory where you want to save the uploaded videos
-        //                string uploadDirectory = Path.Combine(WebRootPath, folderPath);
+                // Define the path where you want to save the uploaded video
+                var filePath = Path.Combine("wwwroot", "uploads", fileName);
 
-        //                // Create the directory if it doesn't exist
-        //                if (!Directory.Exists(uploadDirectory))
-        //                {
-        //                    Directory.CreateDirectory(uploadDirectory);
-        //                }
+                // Save the video file to the server
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    model.CopyTo(fileStream);
+                }
 
-        //                // Generate a unique file name for the video
-        //                string uniqueFileName = Guid.NewGuid().ToString() + fileExtension;
+                return fileName;
+            }
 
-        //                // Save the file to the server
-        //                string filePath = Path.Combine(uploadDirectory, uniqueFileName);
-        //                using (var fileStream = new FileStream(filePath, FileMode.Create))
-        //                {
-        //                    file.CopyTo(fileStream);
-        //                }
+            return null; // or some default value indicating no file was uploaded
+        }
+        public async Task<string> UploadPowerPoint(IFormFile powerPointFile,string Web)
+        {
+            if (powerPointFile != null && powerPointFile.Length > 0)
+            {
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(powerPointFile.FileName);
+                // Save the PowerPoint file to a location (e.g., server's file system)
+                var filePath = Path.Combine(Web, "Uploads", fileName);
 
-        //                // You can save additional information to a database or perform other actions here
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    powerPointFile.CopyTo(stream);
+                }
 
-        //                return "/" + folderPath;
-        //            }
-        //            else
-        //            {
-        //                return "0";
-        //            }
-        //        }
-        //        else
-        //        {
-        //            return "Null";
-        //        }
-        //    }
-            
-        //}
+                // Optionally, you can store the file path in a database or perform additional actions
 
-        private bool IsVideoFile(string fileExtension)
+                return fileName;
+            }
+
+            return null;
+        }
+
+
+
+            private bool IsVideoFile(string fileExtension)
         {
             // You can extend this method to check for valid video file extensions
             // For simplicity, this example allows common video file formats (you might need to update this list)

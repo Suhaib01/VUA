@@ -32,13 +32,13 @@ namespace VUA.UI.Controllers
                 case "Studant":
                     return RedirectToAction("Index", "Dashboard", new { area = "AppUsers" });
                 case "Teacher":
-                    return RedirectToAction("Index", "Dashboard", new { area = "AppUsers" });
+                    return RedirectToAction("TeacherCourses", "Dashboard", new { area = "AppUsers" });
 
                 default:
                     var isAdmin = _userManager.IsInRoleAsync(user!, "Admin").Result;
                     if (isAdmin)
                     {
-                        return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+                        return RedirectToAction("Courses", "Dashboard", new { area = "Admin" });
                     }
                     else
                     {
@@ -93,7 +93,7 @@ namespace VUA.UI.Controllers
                 {
                     _contactRepository.Add(SenderMessage);
                     ViewData["SubmittedData"] =SenderMessage;
-                    return RedirectToAction("_FloatingScreenPartial");
+                    return View("Done");
 
                 }
                 catch (Exception)

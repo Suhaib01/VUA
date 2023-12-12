@@ -10,6 +10,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.17.0/font/bootstrap-icons.css" rel="stylesheet">
     <title>Your Topic Page</title>
     <style>
         body {
@@ -18,8 +19,13 @@
             padding: 0;
             background-color: #f8f8f8;
             color: #333;
+            font-family: Arial, sans-serif;
+            margin: 20px;
         }
 
+        h1 {
+            color: #333;
+        }
         header {
             background-color: #007BFF;
             color: #fff;
@@ -38,7 +44,7 @@
 
         #video-container {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio for responsive video */
+            padding-bottom: 5%; /* 16:9 aspect ratio for responsive video */
             margin-top: 20px;
         }
 
@@ -51,14 +57,28 @@
         }
 
         #description {
-            margin-top: 20px;
+            
             line-height: 1.6;
+        }
+
+        #viewer {
+            width: 100%;
+            height: 500px;
+        }
+
+        .textarea{
+            width: 100%;
+            height:300px;
+            border:none;
+            
         }
     </style>
 </head>
 <body>
-    @if(user.StudantOrTeacher == "Studant")
+    @if(user!.StudantOrTeacher == "Studant")
     {
+                     <!-- Use asp-for to bind the value to the model property -->
+                                               
         @foreach (var item in Model)
         {
             <header>
@@ -69,17 +89,26 @@
 
                 <div id="video-container">
                     <!-- Replace the video URL with your own -->
-                    <iframe id="video" src="https://www.youtube.com/embed/@item.Week.WelcomeViduoUrl" frameborder="0" allowfullscreen></iframe>
+                    <video width="640" height="360" controls>
+                        <source src="~/uploads/@item.Week.ViduoUrl" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
                 </div>
+                <h2>Description</h2>
 
-                <div id="description">
-                    <h2>Description</h2>
-                    <p> @item.Week.Subjectfile</p>
-                </div>
 
+                <textarea class="textarea" disabled> @item.Week.Description</textarea>
+               
+                <br>
+                <a class="btn btn-block btn-secondary" href="@Url.Content($"~/uploads/{item.Week.Subjectfile}")" download>
+                    Description File
+                </a>
             </main>
+            <br />
+            
         }
         <a asp-action="MyCourse" class="btn btn-block btn-outline-primary">Back</a>
+           
     }else
     {
         @foreach (var item in Model)
@@ -91,19 +120,57 @@
             <main>
 
                 <div id="video-container">
-                    <!-- Replace the video URL with your own -->
-                    <iframe id="video" src="https://www.youtube.com/embed/@item.Week.WelcomeViduoUrl" frameborder="0" allowfullscreen></iframe>
+                    <video width="750" height="360" controls>
+                        <source src="~/uploads/@item.Week.ViduoUrl" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
                 </div>
 
-                <div id="description">
+                
                     <h2>Description</h2>
-                    <p> @item.Week.Subjectfile</p>
-                </div>
+                    <textarea class="textarea" disabled> @item.Week.Description</textarea>
+             
+                <br>
+                <a class="btn btn-block btn-secondary" href="@Url.Content($"~/uploads/{item.Week.Subjectfile}")" download>
+                    Description File
+                </a>
 
             </main>
+
+
+            <a asp-action="DeleteWeek" asp-route-courseId="@item.CourseId" asp-route-weekId="@item.WeekId" class="btn btn-block btn-outline-danger">Delete Week</a>
+
+           
+            <br />
+                
         }
-        <a asp-action="TeacherCourses" class="btn btn-block btn-outline-primary">Back</a>
+            <a asp-action="TeacherCourses" class="btn btn-block btn-outline-primary">Back</a>
+
     }
-   
+
+
+
+    <script>
+        var viewer = new Viewer(document.getElementById('viewer'), {
+            navbar: false,
+            toolbar: {
+                zoomIn: 4,
+                zoomOut: 4,
+                oneToOne: 4,
+                reset: 4,
+                prev: 0,
+                play: {
+                    show: 0,
+                    size: 'large',
+                },
+                next: 0,
+                rotateLeft: 4,
+                rotateRight: 4,
+                flipHorizontal: 4,
+                flipVertical: 4,
+            },
+        });
+    </script>
+
 </body>
 </html>

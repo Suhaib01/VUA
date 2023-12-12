@@ -12,7 +12,7 @@ namespace VUA.Core.Models
 		[Key]
         public int WeekId { get; set; }
 
-        public string? WelcomeViduoUrl { get; set; }
+        public string? Description { get; set; }
 
         public string? SubjectName { get; set; }
 

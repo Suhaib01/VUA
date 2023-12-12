@@ -5,17 +5,18 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace VUA.Core.Models.ViewModels
 {
      public class CreateCourseContantViewModel
     {
-        public string? WelcomeViduoUrl { get; set; }
+        public string? Description { get; set; }
         [Required]
         public string? SubjectName { get; set; }
         [Required]
-        public string? ViduoUrl { get; set; }
-        public string? Subjectfile { get; set; }
+        public IFormFile? VideoFile { get; set; }
+        public IFormFile? Subjectfile { get; set; }
 
         public string? WhatStudantShouldDo { get; set; }
 

@@ -22,5 +22,7 @@ namespace VUA.Core.Models
         public string? Email { get; set;}
         [Required(ErrorMessage = "The field cannot be empty")]    
         public string? Message { get; set;}
+        public bool isReplyed { get; set; }
+        public bool isDeleted { get; set; }
     }
 }

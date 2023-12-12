@@ -4,7 +4,7 @@
 @inject SignInManager<AppllicationUser> _signInMaanager
 @inject IBaseRepository<Contact> _messageRepository
 @{
-    var Messages = _messageRepository.GetAll();
+    var Messages = _messageRepository.GetAll().Where(m=>m.isReplyed ==false&&m.isDeleted==false);
     var Admin = _signInMaanager.UserManager.FindByEmailAsync(User.Identity!.Name!).Result;
 }
 <!DOCTYPE html>
@@ -51,7 +51,7 @@
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item active">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link" asp-action="Index">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span>
                 </a>
@@ -127,18 +127,15 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
                    aria-expanded="true" aria-controls="collapsePages">
                     <i class="fas fa-fw fa-folder"></i>
-                    <span>Pages</span>
+                    <span>Messages</span>
                 </a>
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Login Screens:</h6>
-                        <a class="collapse-item" href="login.html">Login</a>
-                        <a class="collapse-item" href="register.html">Register</a>
-                        <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-                        <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Other Pages:</h6>
-                        <a class="collapse-item" href="404.html">404 Page</a>
-                        <a class="collapse-item" href="blank.html">Blank Page</a>
+                        <h6 class="collapse-header">MESSAGE CENTER:</h6>
+                        <a class="collapse-item" asp-action="Index">Messages</a>
+                        <a class="collapse-item" asp-action="ReplyedMessages">Replied Messages</a>
+                        <a class="collapse-item" asp-action="DeletedMessages">Deleted Messages</a>
+
                     </div>
                 </div>
             </li>
@@ -279,7 +276,7 @@
 
                         <!-- Nav Item - Messages -->
                         <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
+                            <a class="nav-link dropdown-toggle" asp-action="Index" id="messagesDropdown" role="button"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-envelope fa-fw"></i>
                                 <!-- Counter - Messages -->
@@ -294,7 +291,7 @@
                                 </h6>
                                 @foreach (var messag in Messages)
                                 {
-                                    <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <a class="dropdown-item d-flex align-items-center" href="Index">
                                         
                                         <div class="font-weight-bold">
                                             <div class="text-truncate">
@@ -304,7 +301,7 @@
                                         </div>
                                     </a>
                                 }
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
+                                <a class="dropdown-item text-center small text-gray-500" href="Index">Read More Messages</a>
                             </div>
                         </li>
 

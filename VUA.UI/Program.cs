@@ -35,7 +35,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-}, ServiceLifetime.Transient);
+}, ServiceLifetime.Scoped);
 
 //builder.Services.AddAuthentication()
 //	.AddGoogle(options =>
@@ -50,6 +50,15 @@ builder.Services.AddTransient(typeof(IAccountRepositorory), typeof(AccountReposi
 builder.Services.AddTransient(typeof(IBaseRepository<>),typeof(BaseRepository<>));
 builder.Services.AddTransient(typeof(IDashboardRipository), typeof(DashboardRipository));
 builder.Services.AddTransient(typeof(IEmailService),typeof(EmailService));
+
+
+builder.Services.AddRazorPages().AddMvcOptions(options => options.MaxModelValidationErrors = 50)
+        .AddViewOptions(options => options.HtmlHelperOptions.ClientValidationEnabled = true);
+
+builder.Services.Configure<IISServerOptions>(options =>
+{
+    options.MaxRequestBodySize = long.MaxValue; // Set to the maximum allowed value
+});
 
 builder.Services.AddDbContextFactory<AppDbContext>(options =>
 {
@@ -76,7 +85,6 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();

@@ -1,4 +1,5 @@
 ﻿@model VUA.Core.Models.ViewModels.CreateCourseContantViewModel
+
 <style>
     textarea {
         width: 100%;
@@ -14,22 +15,27 @@
                 <div asp-validation-summary="All" class="text text-danger"></div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label asp-for="SubjectName">Subject Name</label>
+                    <label asp-for="SubjectName">Subject Name *</label>
                     <input asp-for="SubjectName" type="text" class="form-control " />
                 </div>
             </div>
-                <div class="form-group">
-                    <label asp-for="ViduoUrl">Enter Video URL</label>
-                    <input asp-for="ViduoUrl" type="text" class="form-control ">
-                </div>
-                
-                <label asp-for="Subjectfile">Description</label>
+                <label asp-for="Description">Description</label>
                 <div class="custom-file mb-4">
-                <textarea asp-for="Subjectfile"placeholder="Enter your description here..."></textarea>
+                <textarea asp-for="Description"placeholder="Enter your description here..."></textarea>
 
                 
                 </div>
             
+                <div class="form-group">
+                    <label asp-for="VideoFile">Uplod Video *</label>
+                    <input asp-for="VideoFile" type="file" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Subjectfile">Uplod File</label>
+                <input asp-for="Subjectfile" type="file" class="form-control" />
+              
+                </div>
+                <!-- Add other form fields if needed -->
             </div>
             <div class="card-footer">
             <button type="submit" asp-route-id="@ViewBag.coId" class="btn btn-primary btn-block mt-5">ADD</button>

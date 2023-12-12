@@ -84,5 +84,37 @@ namespace VUA.EF.Repositories
                 return false;
             }
         }
+        public void deleteCourseFromUser(string studentId, int courseId)
+        {
+            var student = _db.ApplicationUsers.Include(s => s.UserCourses).FirstOrDefault(s => s.Id == studentId);
+            var course = _db.Courses.FirstOrDefault(c => c.CourseId == courseId);
+
+            if (student != null && course != null)
+            {
+                // Remove the course from the student's courses
+                var studentCourse = student.UserCourses!.FirstOrDefault(sc => sc.CourseId == courseId);
+                if (studentCourse != null)
+                {
+                    student.UserCourses!.Remove(studentCourse);
+                    _db.SaveChanges();
+                }
+            }
+        }
+        public void deleteWeekFromCourse(int weekId, int courseId)
+        {
+            var course = _db.Courses.Include(s => s.CourseWeeks).FirstOrDefault(s => s.CourseId == courseId);
+            var week = _db.Weeks.FirstOrDefault(c => c.WeekId == weekId);
+
+            if (week != null && course != null)
+            {
+                // Remove the course from the student's courses
+                var CourseWeek = course.CourseWeeks!.FirstOrDefault(sc => sc.WeekId == weekId);
+                if (CourseWeek != null)
+                {
+                    course.CourseWeeks!.Remove(CourseWeek);
+                    _db.SaveChanges();
+                }
+            }
+        }
     }
 }

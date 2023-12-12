@@ -4,6 +4,8 @@ namespace VUA.Core.IRepositories
 {
     public interface IBaseRepository<T> where T : class
     {
+        void deleteWeekFromCourse(int weekId, int courseId);
+        void deleteCourseFromUser(string studentId, int courseId);
         Task<T> GetByIdAsync(int id);
         IEnumerable<T> GetAll();
         void Add(T entity);

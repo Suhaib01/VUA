@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using ServiceStack.Script;
 using System.Net;
 using System.Net.Mail;
 using VUA.Core.IRepositories;
@@ -24,14 +25,16 @@ namespace VUA.UI.Areas.Admin.Controllers
         private IBaseRepository<Course> _courseRepository;
         private IAccountRepositorory _accountRepositorory;
         private IWebHostEnvironment _webHostEnvironment;
-       
+        private IBaseRepository<Contact> _contactRepository;
+
 
 
         public DashboardController(RoleManager<IdentityRole> roleManager,
             UserManager<AppllicationUser> userManager,
             IBaseRepository<Course> courseRepository,
             IAccountRepositorory accountRepositorory,
-            IWebHostEnvironment webHostEnvironment
+            IWebHostEnvironment webHostEnvironment,
+            IBaseRepository<Contact> contactRepository
             )
         {
             _roleManager = roleManager;
@@ -39,6 +42,7 @@ namespace VUA.UI.Areas.Admin.Controllers
             _courseRepository = courseRepository;
             _accountRepositorory = accountRepositorory;
             _webHostEnvironment = webHostEnvironment;
+            _contactRepository = contactRepository;
            
         }
         #endregion
@@ -46,7 +50,20 @@ namespace VUA.UI.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            
+            return View(_contactRepository.GetAll().Where(m=>m.isReplyed==false && m.isDeleted==false));
+        }
+        [HttpGet]
+        public IActionResult ReplyedMessages()
+        {
+
+            return View(_contactRepository.GetAll().Where(m => m.isReplyed == true && m.isDeleted == false));
+        }
+        [HttpGet]
+        public IActionResult DeletedMessages()
+        {
+
+            return View(_contactRepository.GetAll().Where(m => m.isDeleted == true));
         }
         [HttpGet]
         public IActionResult GetStudants()
@@ -279,7 +296,7 @@ namespace VUA.UI.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Courses()
         {
-            return View(_courseRepository.GetAll().Where(c => c.CourseId != 1));
+            return View(_courseRepository.GetAll().Where(c => c.CourseId != 1)) ;
         }
         [HttpPost]
         public IActionResult Courses(string term)
@@ -382,12 +399,12 @@ namespace VUA.UI.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetApprovedTeachers()
         {
-            return View(_userManager.Users.Where(x => x.StudantOrTeacher == "Teacher" && x.IsCompleted == true && x.IsApprovedUser == true));
+            return View(_userManager.Users.Where(x => x.StudantOrTeacher == "Teacher" && x.IsCompleted == true && x.IsApprovedUser == true && x.IsRejectedUser == false));
         }
         [HttpGet]
         public IActionResult GetRejectedUsers()
         {
-            return View(_userManager.Users.Where(x => x.StudantOrTeacher == "Studant" || x.StudantOrTeacher == "Teacher" &&  x.IsRejectedUser==true));
+            return View(_userManager.Users.Where(x => (x.StudantOrTeacher == "Studant" || x.StudantOrTeacher == "Teacher") && x.IsCompleted==true&& x.IsRejectedUser==true&&x.IsApprovedUser==false));
         }
         public async Task<IActionResult> ApproveUser(string id)
         {
@@ -401,10 +418,12 @@ namespace VUA.UI.Areas.Admin.Controllers
                 await SendEmailAsync(user.Email!, "Welcome to Academics", "Your account has been approved,Let's get started");
                 if (user.StudantOrTeacher == "Studant")
                 {
+                    await _accountRepositorory.AddUserToRoleAsync(user, "Studant");
                     return RedirectToAction("GetStudants");
                 }
                 else
                 {
+                    await _accountRepositorory.AddUserToRoleAsync(user, "Teacher");
                     return RedirectToAction("GetTeachers");
                 }
                
@@ -488,7 +507,7 @@ namespace VUA.UI.Areas.Admin.Controllers
                     result=  _courseRepository.UpdateWithIdentityResult(course);
                     
                 }
-                else if (!(models[i].IsSelected) && course.InstructorId == user.Id)
+                else if (!(models[i].IsSelected) && course.InstructorId == user!.Id)
                 {
                     course.InstructorId = "";
                     result = _courseRepository.UpdateWithIdentityResult(course);
@@ -499,6 +518,47 @@ namespace VUA.UI.Areas.Admin.Controllers
                 return RedirectToAction("MoreCourse", new { id = id });
             }
             return View(models);
+        }
+        [HttpGet]
+        public IActionResult Reply(int messageId)
+        {
+           // var message = _contactRepository.Find(messageId);
+           ReplyViewModel model = new ReplyViewModel { Id = messageId};
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Reply(ReplyViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var message = _contactRepository.Find(model.Id);
+                await SendEmailAsync(message.Email!, message.FirsName + " " + message.LastName, model.ReplyMessage!);
+                message.isReplyed = true;
+                await _contactRepository.Update(message);
+                return RedirectToAction("Index");
+            }
+
+            return View(model);
+        }
+        [HttpGet]
+        public IActionResult DeleteMessage(int Id)
+        {
+            var message = _contactRepository.Find(Id);
+            message.isDeleted = true;
+            var result = _contactRepository.Update(message);
+            if (result.IsCompleted)
+            {
+                return RedirectToAction("Index");
+            }
+            return View();
+        }
+        [HttpGet]
+        public IActionResult RestoreMessage(int Id)
+        {
+            var message = _contactRepository.Find(Id);
+            message.isDeleted = false;
+            _contactRepository.Update(message);
+            return RedirectToAction("DeletedMessages");
         }
         private async Task SendEmailAsync(string toEmail, string subject, string body)
         {
