@@ -8,12 +8,16 @@ using VUA.Core.Models.ViewModels;
 using VUA.Core.IRepositories;
 using VUA.Core.IRepositories.IService;
 using VUA.EF.Repositories;
+using System.IO;
+using System.Threading.Tasks;
+using System.Web;
+
 
 
 namespace VUA.UI.Areas.Studant.Controllers
 {
     [Area("AppUsers")]
-    [Authorize(Roles = "AppUsers")]
+    [Authorize(Roles ="AppUsers")]
     public class DashboardController : Controller
     {
 
@@ -27,6 +31,7 @@ namespace VUA.UI.Areas.Studant.Controllers
         private readonly IBaseRepository<AppllicationUser> _appuserRepository;
 		private readonly IBaseRepository<CourseWeeks> _courseWeeksRepository;
         private readonly IBaseRepository<Week> _weeksRepository;
+        private readonly IWebHostEnvironment _webhostEnvauroment;
 		public DashboardController(IAccountRepositorory accountRepositorory,
             IWebHostEnvironment webHostEnvironment,
 			IUserService userService,
@@ -37,7 +42,8 @@ namespace VUA.UI.Areas.Studant.Controllers
 			IBaseRepository<UserCourse> userCourseRepository,
 			IBaseRepository<AppllicationUser> appuserRepository,
 			IBaseRepository<CourseWeeks> courseWeeksRepository,
-            IBaseRepository<Week> weekRepository)
+            IBaseRepository<Week> weekRepository,
+            IWebHostEnvironment webHost)
 		{
 			_webHostEnvironment = webHostEnvironment;
 			_accountRepositorory = accountRepositorory;
@@ -49,6 +55,7 @@ namespace VUA.UI.Areas.Studant.Controllers
 			_appuserRepository = appuserRepository;
 			_courseWeeksRepository = courseWeeksRepository;
             _weeksRepository = weekRepository;
+            _webhostEnvauroment = webHost;
 		}
 		public IActionResult Index()
         {
@@ -79,6 +86,7 @@ namespace VUA.UI.Areas.Studant.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Teacher")]
         public IActionResult CompleteTeacherProfile()
         {
             
@@ -116,6 +124,7 @@ namespace VUA.UI.Areas.Studant.Controllers
 
         }
         [HttpPost]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> CompleteTeacherProfile(CompleatTeacherProfileViewModel model)
         {
             if (_accountRepositorory.ChekPhoneNumper(model.PhoneNumber!) == true) { ViewBag.err = "● Exist Phone number!"; return View(model); }
@@ -179,6 +188,7 @@ namespace VUA.UI.Areas.Studant.Controllers
             return View(studant);
         }
         [HttpGet]
+        [Authorize(Roles = "Teacher")]
         public IActionResult CertificateImg()
         {
             var studant = _accountRepositorory.IsSignInUser(User);
@@ -199,6 +209,7 @@ namespace VUA.UI.Areas.Studant.Controllers
             return View(studant);
         }
         [HttpGet]
+        [Authorize(Roles = "Studant")]
         public IActionResult AddCourse()
         {
             var courses = _userService.GetCourses();
@@ -208,6 +219,7 @@ namespace VUA.UI.Areas.Studant.Controllers
             return View();
         }
         [HttpPost]
+        [Authorize(Roles = "Studant")]
         public async Task<IActionResult> AddCourse(AddCourseViewModel course)
         {
             var co = _cousreRepository.Find(course.Id);
@@ -242,6 +254,7 @@ namespace VUA.UI.Areas.Studant.Controllers
             return View(model);
         }
         [HttpGet]
+        [Authorize(Roles = "Studant")]
         public  IActionResult MyCourse()
         {
             var userId = _userService.GetUserId();
@@ -249,6 +262,7 @@ namespace VUA.UI.Areas.Studant.Controllers
             return View(courses);
         }
         [HttpGet]
+        [Authorize(Roles = "Teacher")]
         public IActionResult TeacherCourses()
         {
             var user = _accountRepositorory.GetApplicationUser().Result;
@@ -261,7 +275,7 @@ namespace VUA.UI.Areas.Studant.Controllers
         {
             return View();
         }
-
+        [Authorize(Roles = "Studant")]
         public IActionResult PaymentHistory()
         {
             var userid = _userService.GetUserId();
@@ -280,63 +294,73 @@ namespace VUA.UI.Areas.Studant.Controllers
             return View();
         }
         [HttpGet]
+        [Authorize(Roles = "Teacher")]
         public  IActionResult CreateCourseContant(Course Course)
         {
             var course = _cousreRepository.Find(Course.CourseId);
             ViewBag.coId= Course.CourseId;
-            ViewBag.Counter = 1;
             return View();
         }
         [HttpPost]
-        public IActionResult CreateCourseContant(Week model, int id)
+        [Authorize(Roles = "Teacher")]
+        public  IActionResult CreateCourseContant(CreateCourseContantViewModel model, int id)
+        {
+            if (ModelState.IsValid)
+            {
+                var course = _cousreRepository.Find(id);
+                if (course == null)
+                {
+                    return NotFound();
+                }
+                var ids = new Week
+                {
+                    WhatStudantShouldDo = model.WhatStudantShouldDo,
+                    EndOfThisWeek = model.EndOfThisWeek,
+                    Subjectfile = model.Subjectfile,
+                    ViduoUrl =  model.ViduoUrl,
+                    WelcomeViduoUrl = model.WelcomeViduoUrl,
+                    SubjectName = model.SubjectName
+                };
+                _weeksRepository.Add(ids);
+
+                var courseWeek = new CourseWeeks
+                {
+                    CourseId = course.CourseId,
+                    WeekId = ids.WeekId
+                };
+                _courseWeeksRepository.Add(courseWeek);
+
+                return RedirectToAction("TeacherCourses");
+            }
+            return View(model);
+        }
+        
+        public IActionResult Contant(int id)
         {
             
-            int constant = 8;
-            do
+            var courseContant = _courseWeeksRepository.GetValues("Week").Where(c => c.CourseId ==id);
+
+            if (courseContant.Any())
             {
-                ViewBag.counter = 1;
-                if (ModelState.IsValid)
-                {
-                    var course = _cousreRepository.Find(id);
-                    if (course == null)
-                    {
-                        return NotFound();
-                    }
-                    var ids = new Week
-                    {
-                        WhatStudantShouldDo = model.WhatStudantShouldDo,
-                        EndOfThisWeek = model.EndOfThisWeek,
-                        Subjectfile = model.Subjectfile,
-                        ViduoUrl = model.ViduoUrl,
-                        WelcomeViduoUrl = model.WelcomeViduoUrl,
-                        SubjectName = model.SubjectName
-                    };
-                    _weeksRepository.Add(ids);
-
-                    var courseWeek = new CourseWeeks
-                    {
-                        CourseId = course.CourseId,
-                        WeekId = ids.WeekId
-                    };
-                    _courseWeeksRepository.Add(courseWeek);
-                    
-                }
-                ViewBag.counter++;
-               
-            } while (constant == 0);
-            return View();
-
-
+                return View(courseContant);
+            }
+            else
+            {
+               return NoContent();
+            }
+            
         }
-
+        [Authorize(Roles = "Studant")]
         public IActionResult DropeCourse(int courseId)
         {
             ViewBag.DropeCourse= _cousreRepository.Find(courseId);
             return RedirectToAction("MyCourse");
         }
 
-
-
+       
+        
     }
 
 }
+
+

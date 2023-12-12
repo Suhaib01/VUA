@@ -168,8 +168,11 @@
 					</a>
 					<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
 						<a class="dropdown-item" asp-action="Profile"><i class="dw dw-user1"></i> Profile</a>
-						<a class="dropdown-item" asp-action=""><i class="dw dw-settings2"></i> Setting</a>
-						<a class="dropdown-item" asp-action=""><i class="dw dw-help"></i> Help</a>
+						@if (user.IsApprovedUser)
+						{
+							<a class="dropdown-item" asp-action=""><i class="dw dw-settings2"></i> Setting</a>
+							<a class="dropdown-item" asp-action=""><i class="dw dw-help"></i> Help</a>
+						}
 						<a class="dropdown-item" asp-area="Identity" asp-controller="Account" asp-action="Logout"><i class="dw dw-logout"></i> Log Out</a>
 					</div>
 				</div>
@@ -265,7 +268,7 @@
 				<i class="ion-close-round"></i>
 			</div>
 		</div>
-		@if(user!.StudantOrTeacher == "Studant")
+		@if(user!.StudantOrTeacher == "Studant" && user!.IsApprovedUser)
 		{
 			<div class="menu-block customscroll">
 				
@@ -310,7 +313,7 @@
 				</div>
 			</div>
 		}
-		else
+		else if (user!.StudantOrTeacher == "Teacher" && user!.IsApprovedUser)
 		{
 			<div class="menu-block customscroll">
 				<div class="sidebar-menu">

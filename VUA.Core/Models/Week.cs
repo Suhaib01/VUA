@@ -16,6 +16,7 @@ namespace VUA.Core.Models
 
         public string? SubjectName { get; set; }
 
+
 		public string? ViduoUrl { get; set; }
 
 		public string? Subjectfile { get; set; }

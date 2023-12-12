@@ -2,70 +2,91 @@
 
 @if (Model.StudantOrTeacher == "Studant")
 {
-    if(Model.IsApprovedUser == true)
+    if (Model.IsRejectedUser)
     {
-
-        <div id="overlay"></div>
-        <div id="floating-screen" class="page-header">
-            <!-- Content of your floating screen goes here -->
-            <h4>Add Cours Now !</h4>
-            <p>One step left to start</p>
-            <a asp-action="AddCourse" class="btn btn-success">Add</a>
-            <a asp-action="Profile" class="btn btn-outline-warning">Cancle</a>
-        </div>
-
-
-
-    }
-    else
+        <div class="alert alert-primary mb-14 "><span class="text text-danger">Your account is Rejected</span></div>
+    }else
     {
-        if (Model.IsCompleted ==true)
+        if (Model.IsApprovedUser == true)
         {
-            <div class="alert alert-primary mb-14 ">Your request has not been approved yet <a class="btn btn-success" asp-action="Chat"> Click here</a> if you want help.</div>
-        }
-        else{
-            <div id="overlay"></div>
-            <div id="floating-screen" class="page-header">
-                <!-- Content of your floating screen goes here -->
-                <h4>Confirm your account</h4>
-                <p>Please complete your account information</p>
-                <a asp-action="CompleteTeacherProfile" class="btn btn-success">Go it</a>
-            </div>
+            if (Model.IsCompleted == true)
+            {
+
+                <div id="overlay"></div>
+                <div id="floating-screen" class="page-header">
+                    <!-- Content of your floating screen goes here -->
+                    <h4>Add Cours Now !</h4>
+                    <p>One step left to start</p>
+                    <a asp-action="AddCourse" class="btn btn-success">Add</a>
+                    <a asp-action="Profile" class="btn btn-outline-warning">Cancle</a>
+                </div>
+
+
+            }
 
         }
+        else
+        {
+            if (Model.IsCompleted == true)
+            {
+
+
+                <div class="alert alert-primary mb-14 ">Your request has not been approved yet <span class="text text-danger">We will send you an email</span> if your account is accepted.</div>
+            }
+            else
+            {
+                <div id="overlay"></div>
+                <div id="floating-screen" class="page-header">
+                    <!-- Content of your floating screen goes here -->
+                    <h4>Confirm your account</h4>
+                    <p>Please complete your account information</p>
+                    <a asp-action="CompleteProfile" class="btn btn-success">Go it</a>
+                </div>
+
+            }
 
 
 
+        }
     }
+
 
 
 }
 else
 {
-    if (Model.IsApprovedUser == true )
+    if (Model.IsRejectedUser)
     {
-
+        <div class="alert alert-primary mb-14 "><span class="text text-danger">Your account is Rejected</span></div>
     }
     else
     {
-        if(Model.IsCompleted == true)
+        if (Model.IsApprovedUser == true)
         {
-            <div class="alert alert-primary mb-14 ">Your request has not been approved yet <a class="btn btn-success" asp-action="Chat"> Click here</a> if you want help.</div>
+
         }
         else
         {
-            <div id="overlay"></div>
-            <div id="floating-screen" class="page-header">
-                <!-- Content of your floating screen goes here -->
-                <h4>Confirm your account</h4>
-                <p>Please complete your account information</p>
-                <a asp-action="CompleteTeacherProfile" class="btn btn-success">Go it</a>
-            </div>
+            if (Model.IsCompleted == true)
+            {
+                <div class="alert alert-primary mb-14 ">Your request has not been approved yet <span class="text text-danger">We will send you an email</span> if your account is accepted.</div>
+            }
+            else
+            {
+                <div id="overlay"></div>
+                <div id="floating-screen" class="page-header">
+                    <!-- Content of your floating screen goes here -->
+                    <h4>Confirm your account</h4>
+                    <p>Please complete your account information</p>
+                    <a asp-action="CompleteTeacherProfile" class="btn btn-success">Go it</a>
+                </div>
+            }
+
         }
-        
+
     }
-    
 }
+    
 
 <style>
         /* Styling for the overlay */

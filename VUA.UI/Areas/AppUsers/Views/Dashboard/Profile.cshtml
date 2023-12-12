@@ -5,7 +5,7 @@
     <section>
         <div class="container">
             <div class="row">
-                <div class="col-lg-4">
+                <div class="col-lg-4 mb-lg-5">
                     <div class="page-header">
                         <div class="text-center">
                             @if (Model.ProfileImage == null)
@@ -17,7 +17,7 @@
                             {
                                 <a asp-action="viewPImg">
                                     <img src="@Model.ProfileImage" alt="avatar"
-                                         class="rounded-circle img-fluid" style="width: 150px; height:150px">
+                                         class="rounded-circle img-fluid" style="width: 120px; height:120px">
                                 </a>
                                 
                             }
@@ -50,7 +50,7 @@
                                     
                                     
                                 </li>
-                                @if(Model.StudantOrTeacher == "Teacher")
+                                @if (Model.StudantOrTeacher == "Teacher")
                                 {
                                     if (Model.IsApprovedUser != true)
                                     {
@@ -74,27 +74,55 @@
                                             <button class="btn btn-primary" style="background-color:forestgreen" disabled>Approvde</button>
                                         </li>
                                     }
-                                    
+
 
                                 }
-
-                                
                                 @if (Model.IDbackImage != null)
                                 {
-                                    if(Model.IsApprovedUser != true)
+                                    if (Model.IsApprovedUser != true)
                                     {
+                                        <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                            <a asp-action="viewFImg">ID Front Side Pictuer</a>
+                                            <button class="btn btn-primary" style="background-color:gold" disabled>pending</button>
+                                        </li>
                                         <li class="list-group-item d-flex justify-content-between align-items-center p-3">
                                             <a asp-action="viewBImg">ID Back Side Pictuer</a>
                                             <button class="btn btn-primary" style="background-color:gold" disabled>pending</button>
                                         </li>
-                                    }else{
+                                    }
+                                    else
+                                    {
+                                        <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                            <a asp-action="viewFImg">ID Front Side Pictuer</a>
+                                            <button class="btn btn-primary" style="background-color:forestgreen" disabled>Approvde</button>
+                                        </li>
                                         <li class="list-group-item d-flex justify-content-between align-items-center p-3">
                                             <a asp-action="viewBImg">ID Back Side Pictuer</a>
                                             <button class="btn btn-primary" style="background-color:forestgreen" disabled>Approvde</button>
                                         </li>
                                     }
-                                   
+
                                 }
+                                else
+                                {
+                                    if (Model.IsApprovedUser != true)
+                                    {
+                                        <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                            <a asp-action="viewFImg">pasaport</a>
+                                            <button asp-action="viewFImg" class="btn btn-primary" style="background-color:gold" >pending</button>
+                                        </li>
+           
+                                    }
+                                    else
+                                    {
+                                        <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                            <a asp-action="viewFImg">pasaport</a>
+                                            <button asp-action="viewFImg" class="btn btn-primary" style="background-color:forestgreen" >Approvde</button>
+                                        </li>
+
+                                    }
+                                }
+
                                 
                                 @*@if (!Model.IsExternalUser)
                                 {

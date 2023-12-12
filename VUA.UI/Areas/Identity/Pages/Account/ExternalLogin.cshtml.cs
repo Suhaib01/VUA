@@ -182,7 +182,7 @@ namespace WebApplication1.Areas.Identity.Pages.Account
                 user.Gender = gender;
                 user.StudantOrTeacher = selectedValue;
                 user.IsCompleted = false;
-                user.IsExternalUser =true;
+               // user.IsExternalUser =true;
                 user.FullName =Input.FirstName;
                 user.StudantOrTeacher = Input.StudantOrTeacher;
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);

@@ -1,0 +1,109 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using VUA.Core.Models;
+@model IEnumerable<VUA.Core.Models.CourseWeeks>
+@inject UserManager<AppllicationUser> _UserInManger
+@{
+    var user = _UserInManger.FindByEmailAsync(User.Identity!.Name!).Result;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Topic Page</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+            color: #333;
+        }
+
+        header {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        #video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio for responsive video */
+            margin-top: 20px;
+        }
+
+        #video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #description {
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    @if(user.StudantOrTeacher == "Studant")
+    {
+        @foreach (var item in Model)
+        {
+            <header>
+                <h1>@item.Week!.SubjectName</h1>
+            </header>
+
+            <main>
+
+                <div id="video-container">
+                    <!-- Replace the video URL with your own -->
+                    <iframe id="video" src="https://www.youtube.com/embed/@item.Week.WelcomeViduoUrl" frameborder="0" allowfullscreen></iframe>
+                </div>
+
+                <div id="description">
+                    <h2>Description</h2>
+                    <p> @item.Week.Subjectfile</p>
+                </div>
+
+            </main>
+        }
+        <a asp-action="MyCourse" class="btn btn-block btn-outline-primary">Back</a>
+    }else
+    {
+        @foreach (var item in Model)
+        {
+            <header>
+                <h1>@item.Week!.SubjectName</h1>
+            </header>
+
+            <main>
+
+                <div id="video-container">
+                    <!-- Replace the video URL with your own -->
+                    <iframe id="video" src="https://www.youtube.com/embed/@item.Week.WelcomeViduoUrl" frameborder="0" allowfullscreen></iframe>
+                </div>
+
+                <div id="description">
+                    <h2>Description</h2>
+                    <p> @item.Week.Subjectfile</p>
+                </div>
+
+            </main>
+        }
+        <a asp-action="TeacherCourses" class="btn btn-block btn-outline-primary">Back</a>
+    }
+   
+</body>
+</html>

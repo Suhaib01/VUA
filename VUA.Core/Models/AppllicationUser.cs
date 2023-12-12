@@ -25,7 +25,7 @@ namespace VUA.Core.Models
         public bool? IsCompleted { get; set; }
         public string? IDFrontImage { get; set; }
         public string? IDbackImage { get; set; }
-        public bool IsExternalUser { get; set; }
+        public bool IsRejectedUser { get; set; }
         [NotMapped]
         public string? Password { get; set; }
         public bool IsApprovedUser { get; set; }

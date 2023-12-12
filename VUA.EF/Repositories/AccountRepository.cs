@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -161,6 +162,62 @@ namespace VUA.EF.Repositories
             string serverFolder = Path.Combine(WebRootPath, folderPath);
             await file.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
             return "/"+folderPath;
+        }
+        //public async Task<string> UploadVideo(string folderPath, IFormFile file, string WebRootPath)
+        //{
+        //    try
+        //    {
+        //        // Check if the file is not null and is valid
+        //        if (file != null && file.Length > 0)
+        //        {
+        //            // Get the file extension
+        //            string fileExtension = Path.GetExtension(file.FileName);
+
+        //            // Check if it's a valid video file (you can extend this check based on your requirements)
+        //            if (IsVideoFile(fileExtension))
+        //            {
+        //                // Specify the directory where you want to save the uploaded videos
+        //                string uploadDirectory = Path.Combine(WebRootPath, folderPath);
+
+        //                // Create the directory if it doesn't exist
+        //                if (!Directory.Exists(uploadDirectory))
+        //                {
+        //                    Directory.CreateDirectory(uploadDirectory);
+        //                }
+
+        //                // Generate a unique file name for the video
+        //                string uniqueFileName = Guid.NewGuid().ToString() + fileExtension;
+
+        //                // Save the file to the server
+        //                string filePath = Path.Combine(uploadDirectory, uniqueFileName);
+        //                using (var fileStream = new FileStream(filePath, FileMode.Create))
+        //                {
+        //                    file.CopyTo(fileStream);
+        //                }
+
+        //                // You can save additional information to a database or perform other actions here
+
+        //                return "/" + folderPath;
+        //            }
+        //            else
+        //            {
+        //                return "0";
+        //            }
+        //        }
+        //        else
+        //        {
+        //            return "Null";
+        //        }
+        //    }
+            
+        //}
+
+        private bool IsVideoFile(string fileExtension)
+        {
+            // You can extend this method to check for valid video file extensions
+            // For simplicity, this example allows common video file formats (you might need to update this list)
+            string[] allowedExtensions = { ".mp4", ".avi", ".mkv", ".mov", ".wmv" };
+            return allowedExtensions.Contains(fileExtension, StringComparer.OrdinalIgnoreCase);
         }
 
         public void AddCourse(int courseId)

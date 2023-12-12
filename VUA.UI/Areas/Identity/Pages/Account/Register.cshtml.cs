@@ -136,7 +136,7 @@ namespace WebApplication1.Areas.Identity.Pages.Account
                 
                 var user = CreateUser();
                 user.IsCompleted = false;
-                user.IsExternalUser = false;
+                user.IsRejectedUser = false;
                 user.FullName = Input.FirstName + " " + Input.LastName;
                 
                 user.Gender = gender;

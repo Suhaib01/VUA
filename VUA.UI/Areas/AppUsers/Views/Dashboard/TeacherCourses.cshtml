@@ -9,7 +9,7 @@
                 @foreach (var course in ViewBag.InsCourse)
                 {
                     <form method="get" asp-action="CreateCourseContant">
-                        <div class="card  mt-4 mb-4" style="height:170px">
+                        <div class="card  mt-4 mb-4" style="height:270px">
                             <div class="card-body" style="height:450px; width:700px">
                                 <h2 class="mb-0 text-bold">@course.CourseName</h2>
                                 <p class="text-sm">@course.CourseDescription</p>
@@ -18,9 +18,11 @@
                             <input type="hidden" asp-for="CourseId" value="@course.CourseId">
                             <div class="card-footer">
                                 <input type="submit" class="btn btn-outline-primary btn-block" value="Build Course" />
+                                <a class="btn btn-primary btn-block" asp-action="Contant" asp-route-id="@course.CourseId">Show</a>
                             </div>
                         </div>
                     </form>
+                    
 
                 }
 

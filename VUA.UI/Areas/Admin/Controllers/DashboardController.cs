@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-
+using System.Net;
+using System.Net.Mail;
 using VUA.Core.IRepositories;
 using VUA.Core.Models;
 using VUA.Core.Models.ViewModels;
@@ -50,7 +51,7 @@ namespace VUA.UI.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetStudants()
         {
-            return View(_userManager.Users.Where(x => x.StudantOrTeacher == "Studant" && x.IsCompleted == true && x.IsApprovedUser==false));
+            return View(_userManager.Users.Where(x => x.StudantOrTeacher == "Studant" && x.IsCompleted == true && x.IsApprovedUser==false&&x.IsRejectedUser==false));
         }
         [HttpGet]
         public IActionResult GetApprovedStudants()
@@ -232,7 +233,7 @@ namespace VUA.UI.Areas.Admin.Controllers
                 {
                     result = await _userManager.RemoveFromRoleAsync(user!, role.Name!);
                 }
-                return View(models);
+                //return View(models);
             }
             if (result!.Succeeded)
             {
@@ -376,22 +377,28 @@ namespace VUA.UI.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetTeachers()
         {
-			return View(_userManager.Users.Where(x => x.StudantOrTeacher == "Teacher" && x.IsCompleted == true && x.IsApprovedUser == false));
+			return View(_userManager.Users.Where(x => x.StudantOrTeacher == "Teacher" && x.IsCompleted == true && x.IsApprovedUser == false && x.IsRejectedUser == false));
 		}
         [HttpGet]
         public IActionResult GetApprovedTeachers()
         {
             return View(_userManager.Users.Where(x => x.StudantOrTeacher == "Teacher" && x.IsCompleted == true && x.IsApprovedUser == true));
         }
-
+        [HttpGet]
+        public IActionResult GetRejectedUsers()
+        {
+            return View(_userManager.Users.Where(x => x.StudantOrTeacher == "Studant" || x.StudantOrTeacher == "Teacher" &&  x.IsRejectedUser==true));
+        }
         public async Task<IActionResult> ApproveUser(string id)
         {
             var user = _accountRepositorory.FindUserByIdAsync(id).Result;
             
             user.IsApprovedUser = true;
+            user.IsRejectedUser = false;
             var result = await _userManager.UpdateAsync(user);
             if (result.Succeeded)
             {
+                await SendEmailAsync(user.Email!, "Welcome to Academics", "Your account has been approved,Let's get started");
                 if (user.StudantOrTeacher == "Studant")
                 {
                     return RedirectToAction("GetStudants");
@@ -411,9 +418,11 @@ namespace VUA.UI.Areas.Admin.Controllers
             var user = _accountRepositorory.FindUserByIdAsync(id).Result;
 
             user.IsApprovedUser = false;
+            user.IsRejectedUser = true;
             var result = await _userManager.UpdateAsync(user);
             if (result.Succeeded)
             {
+                await SendEmailAsync(user.Email!, "Welcome to Academics", "We are sorry that your account has been rejected");
                 if (user.StudantOrTeacher == "Studant")
                 {
                     return RedirectToAction("GetStudants");
@@ -491,6 +500,28 @@ namespace VUA.UI.Areas.Admin.Controllers
             }
             return View(models);
         }
+        private async Task SendEmailAsync(string toEmail, string subject, string body)
+        {
+            var smtpClient = new SmtpClient("smtp.gmail.com") // replace with your SMTP server
+            {
+                Port = 587, // replace with your SMTP port
+                Credentials = new NetworkCredential("suhaibaljayyousi22@gmail.com", "rhlvwcojfzhgjtfy"), // replace with your email credentials
+                EnableSsl = true,
+            };
 
+            var mailMessage = new MailMessage
+            {
+                From = new MailAddress("Academics@gmail.com"), // replace with your email address
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = true,
+            };
+
+            mailMessage.To.Add(new MailAddress(toEmail));
+
+            await smtpClient.SendMailAsync(mailMessage);
+        }
+
+       
     }
 }
