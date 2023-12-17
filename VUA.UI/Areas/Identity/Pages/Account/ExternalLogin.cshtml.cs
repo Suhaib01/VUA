@@ -133,7 +133,7 @@ namespace WebApplication1.Areas.Identity.Pages.Account
             if (result.Succeeded)
             {
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
-                return LocalRedirect("~/Account/Redirection");
+                return LocalRedirect("~/Home/Redirection");
             }
             if (result.IsLockedOut)
             {
