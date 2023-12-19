@@ -252,6 +252,7 @@ namespace VUA.EF.Repositories
         }
         public  bool ChekPhoneNumper(string phone)
         {
+            if(phone == null) { return false; }
             var chkPhone = _applicationUserRepository.GetAll().Where(x => x.PhoneNumber == phone);
             if (chkPhone.Any())
             {

@@ -3,9 +3,13 @@
 @using VUA.Core.Models;
 @inject SignInManager<AppllicationUser> _signInMaanager
 @inject IBaseRepository<Contact> _messageRepository
+@inject IBaseRepository<AppllicationUser> _userManger
 @{
     var Messages = _messageRepository.GetAll().Where(m=>m.isReplyed ==false&&m.isDeleted==false);
+    var PendingStudants = _userManger.GetAll().Where(s =>s.StudantOrTeacher=="Studant" && s.IsCompleted == true && s.IsApprovedUser == false);
+    var PendingTeachers = _userManger.GetAll().Where(s => s.StudantOrTeacher == "Teacher" && s.IsCompleted == true && s.IsApprovedUser == false);
     var Admin = _signInMaanager.UserManager.FindByEmailAsync(User.Identity!.Name!).Result;
+    int Sum = Messages.Count() + PendingStudants.Count() + PendingTeachers.Count();
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -18,7 +22,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Dashboard</title>
+    <title> Admin - Dashboard</title>
 
     <!-- Custom fonts for this template-->
     <link href="~/AdminTemplet/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -141,20 +145,7 @@
             </li>
 
             <!-- Nav Item - Charts -->
-            <li class="nav-item">
-                <a class="nav-link" href="charts.html">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Charts</span>
-                </a>
-            </li>
-
-            <!-- Nav Item - Tables -->
-            <li class="nav-item">
-                <a class="nav-link" href="tables.html">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Tables</span>
-                </a>
-            </li>
+           
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
@@ -281,13 +272,13 @@
                                 <i class="fas fa-envelope fa-fw"></i>
                                 <!-- Counter - Messages -->
 
-                                <span class="badge badge-danger badge-counter">@Messages.Count()</span>
+                                <span class="badge badge-danger badge-counter">@Sum</span>
                             </a>
                             <!-- Dropdown - Messages -->
                             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                  aria-labelledby="messagesDropdown">
                                 <h6 class="dropdown-header">
-                                    Message Center
+                                    Contact Messages
                                 </h6>
                                 @foreach (var messag in Messages)
                                 {
@@ -301,7 +292,39 @@
                                         </div>
                                     </a>
                                 }
-                                <a class="dropdown-item text-center small text-gray-500" href="Index">Read More Messages</a>
+                                <a class="dropdown-item text-center small text-gray-500" asp-action="Index">Read More Messages</a>
+                                <h6 class="dropdown-header">
+                                    Pending Studants
+                                </h6>
+                                @foreach (var Puser in PendingStudants)
+                                {
+                                    <a class="dropdown-item d-flex align-items-center" asp-action="GetStudants">
+
+                                        <div class="font-weight-bold">
+                                            <div class="text-truncate">
+                                                @Puser.FullName
+                                            </div>
+                                            <div class="small text-gray-500">@Puser.Gender · @Puser.Email</div>
+                                        </div>
+                                    </a>
+                                }
+                                <a class="dropdown-item text-center small text-gray-500" asp-action="GetStudants">Show all Pending Studants</a>
+                                <h6 class="dropdown-header">
+                                    Pending Teachers
+                                </h6>
+                                @foreach (var Puser in PendingTeachers)
+                                {
+                                    <a class="dropdown-item d-flex align-items-center" asp-action="GetTeachers">
+
+                                        <div class="font-weight-bold">
+                                            <div class="text-truncate">
+                                                @Puser.FullName
+                                            </div>
+                                            <div class="small text-gray-500">@Puser.Gender · @Puser.Email</div>
+                                        </div>
+                                    </a>
+                                }
+                                <a class="dropdown-item text-center small text-gray-500" asp-action="GetTeachers">Show all Pending Teachers</a>
                             </div>
                         </li>
 

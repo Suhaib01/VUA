@@ -23,12 +23,14 @@
                             }
                             @if (Model.StudantOrTeacher == "Teacher")
                             {
+                                
                                 <h5 class="my-3">@Model.FullName</h5>
                                 <p class="text-muted mb-1">@Model.Major</p>
-                                <p class="text-muted mb-4">@Model.Description</p>
+                                <textarea class="text-muted mb-2" style="height:150px;background-color:white;border:none" disabled>@Model.Description</textarea>
                                 <div class="d-flex justify-content-center mb-2">
                                     <a asp-action="ChangePicture" type="button" class="btn btn-primary">Change Picture</a>
                                 </div>
+                                
                             }else{
                                 <h5 class="my-3">@Model.FullName</h5>
                                 <p class="text-muted mb-1"></p>
@@ -164,7 +166,7 @@
                                     <p class="mb-0">Phone</p>
                                 </div>
                                 <div class="col-sm-9">
-                                    <p class="text-muted mb-0">0 @Model.PhoneNumber</p>
+                                    <p class="text-muted mb-0">@Model.PhoneNumber</p>
                                 </div>
                             </div>
                             <hr>

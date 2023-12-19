@@ -342,7 +342,7 @@ namespace VUA.UI.Areas.Admin.Controllers
                 {
                     course.CourseImage = await _accountRepositorory.UploadImag(folder, model.CourseImage, _webHostEnvironment.WebRootPath);
                 }
-                _courseRepository.Update(course);
+                await _courseRepository.Update(course);
                 return RedirectToAction("Courses");
             }
             return View(model);

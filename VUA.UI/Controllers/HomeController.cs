@@ -32,8 +32,15 @@ namespace VUA.UI.Controllers
                 case "Studant":
                     return RedirectToAction("Index", "Dashboard", new { area = "AppUsers" });
                 case "Teacher":
-                    return RedirectToAction("TeacherCourses", "Dashboard", new { area = "AppUsers" });
-
+                    if(_userManager.IsInRoleAsync(user!, "Teacher").Result && _userManager.IsInRoleAsync(user!, "AppUsers").Result)
+                    {
+                        return RedirectToAction("TeacherCourses", "Dashboard", new { area = "AppUsers" });
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Dashboard", new { area = "AppUsers" });
+                    }
+                    
                 default:
                     var isAdmin = _userManager.IsInRoleAsync(user!, "Admin").Result;
                     if (isAdmin)

@@ -80,7 +80,7 @@
 							@TempData["con"]
 						</div>
 						<div class="wizard-content">
-							<form asp-page="/ExternalLogin" class="tab-wizard2 wizard-circle wizard" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+							<form class="tab-wizard2 wizard-circle wizard" id="registerForm" asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
 							
 								<h5>Basic Account Credentials</h5>
 								<section>
@@ -134,7 +134,7 @@
 										</div>
 									</div>
 								</section>
-								<input type="submit" asp-page-handler="ConfirmationAsync" class="w-100 btn btn-lg btn-primary" value="Register" />
+								
 							</form>
 						</div>
 					</div>

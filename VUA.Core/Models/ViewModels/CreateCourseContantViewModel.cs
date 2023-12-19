@@ -15,8 +15,8 @@ namespace VUA.Core.Models.ViewModels
         [Required]
         public string? SubjectName { get; set; }
         [Required]
-        public IFormFile? VideoFile { get; set; }
-        public IFormFile? Subjectfile { get; set; }
+        public List<IFormFile>? VideoFile { get; set; }
+        public List<IFormFile>? Subjectfile { get; set; }
 
         public string? WhatStudantShouldDo { get; set; }
 

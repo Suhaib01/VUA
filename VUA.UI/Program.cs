@@ -10,13 +10,13 @@ using LiveChat.signalr.hubs;
 
 
 var builder = WebApplication.CreateBuilder(args);
-//var _configuration = builder.Configuration;
+var _configuration = builder.Configuration;
 
-//builder.Services.AddAuthentication().AddGoogle(options =>
-//{
-//	options.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
-//	options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
-//});
+builder.Services.AddAuthentication().AddGoogle(options =>
+{
+	options.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
+	options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
+});
 
 
 builder.Services.AddAuthentication(options =>
@@ -24,11 +24,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultScheme = IdentityConstants.ApplicationScheme;
     options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
 })
-.AddGoogle(options =>
-{
-    options.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
-    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
-});
+;
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -36,13 +32,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 }, ServiceLifetime.Scoped);
-
-//builder.Services.AddAuthentication()
-//	.AddGoogle(options =>
-//	{
-//		options.ClientId = "474985806662-8e0gt2nh3kbfddqk3q9hlfq59b3emuvq.apps.googleusercontent.com";
-//		options.ClientSecret = "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";
-//	});
 
 builder.Services.AddIdentity<AppllicationUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 builder.Services.AddTransient(typeof(IUserService), typeof(UserService));

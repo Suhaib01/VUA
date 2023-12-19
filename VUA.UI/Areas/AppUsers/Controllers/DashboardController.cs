@@ -11,6 +11,7 @@ using VUA.EF.Repositories;
 using System.IO;
 using System.Threading.Tasks;
 using System.Web;
+using Humanizer;
 
 
 
@@ -33,7 +34,11 @@ namespace VUA.UI.Areas.Studant.Controllers
         private readonly IBaseRepository<Week> _weeksRepository;
         private readonly IWebHostEnvironment _webhostEnvauroment;
         private readonly SignInManager<AppllicationUser> _signInManager;
-		public DashboardController(IAccountRepositorory accountRepositorory,
+        private readonly IBaseRepository<ViduoUrl> _viduoUrlRepository;
+        private readonly IBaseRepository<FileUrl> _subjectfileRepository;
+        private readonly IBaseRepository<WeekVideoUrls> _weekVideoUrls;
+        private readonly IBaseRepository<WeekFileUrl> _weekFileUrlRepository;
+        public DashboardController(IAccountRepositorory accountRepositorory,
             IWebHostEnvironment webHostEnvironment,
 			IUserService userService,
 			IBaseRepository<Course> cousreRepository,
@@ -45,7 +50,11 @@ namespace VUA.UI.Areas.Studant.Controllers
 			IBaseRepository<CourseWeeks> courseWeeksRepository,
             IBaseRepository<Week> weekRepository,
             IWebHostEnvironment webHost,
-            SignInManager<AppllicationUser> signInManager)
+            SignInManager<AppllicationUser> signInManager,
+            IBaseRepository<ViduoUrl> videoUrlRepository,
+            IBaseRepository<FileUrl> subjectfileRepository,
+            IBaseRepository<WeekVideoUrls> weekVideoUrls,
+            IBaseRepository<WeekFileUrl> weekFileUrlRepository)
 		{
 			_webHostEnvironment = webHostEnvironment;
 			_accountRepositorory = accountRepositorory;
@@ -59,6 +68,10 @@ namespace VUA.UI.Areas.Studant.Controllers
             _weeksRepository = weekRepository;
             _webhostEnvauroment = webHost;
             _signInManager = signInManager;
+            _viduoUrlRepository = videoUrlRepository;
+            _subjectfileRepository = subjectfileRepository;
+            _weekVideoUrls = weekVideoUrls;
+            _weekFileUrlRepository = weekFileUrlRepository;
 		}
 		public IActionResult Index()
         {
@@ -301,7 +314,16 @@ namespace VUA.UI.Areas.Studant.Controllers
         {
             var course = _cousreRepository.Find(Course.CourseId);
             ViewBag.coId= Course.CourseId;
+
             return View();
+        }
+        [HttpGet]
+        [Authorize(Roles = "Teacher")]
+        public IActionResult Redirect(int Course)
+        {
+            var course = _cousreRepository.Find(Course);
+  
+            return RedirectToAction("CreateCourseContant",course);
         }
         [HttpPost]
         [Authorize(Roles = "Teacher")]
@@ -319,12 +341,43 @@ namespace VUA.UI.Areas.Studant.Controllers
                 {
                     WhatStudantShouldDo = model.WhatStudantShouldDo,
                     EndOfThisWeek = model.EndOfThisWeek,
-                    Subjectfile = await _accountRepositorory.UploadPowerPoint(model.Subjectfile!, _webHostEnvironment.WebRootPath),
-                    ViduoUrl = await _accountRepositorory.UploadVideo(model.VideoFile!),
+                    //Subjectfile = await _accountRepositorory.UploadPowerPoint(model.Subjectfile!, _webHostEnvironment.WebRootPath),
+                   // ViduoUrl = await _accountRepositorory.UploadVideo(model.VideoFile!),
                     Description = model.Description,
                     SubjectName = model.SubjectName
                 };
                 _weeksRepository.Add(ids);
+                for (int i = 0; i < model.VideoFile!.Count; i++)
+                {
+
+                    var videoFile = new ViduoUrl
+                    {
+                        UrlString = await _accountRepositorory.UploadPowerPoint(model.VideoFile[i], _webHostEnvironment.WebRootPath)
+
+                    };
+                    _viduoUrlRepository.Add(videoFile);
+                    var weekVideoUrls = new WeekVideoUrls
+                    {
+                        WeekId = ids.WeekId,
+                        id = videoFile.id
+                    };
+                    _weekVideoUrls.Add(weekVideoUrls);
+                }
+                
+                for (int i = 0; i < model.Subjectfile!.Count; i++)
+                {
+                    var subjectfile = new FileUrl
+                    {
+                        UrlString = await _accountRepositorory.UploadPowerPoint(model.Subjectfile[i], _webHostEnvironment.WebRootPath)
+                    };
+                    _subjectfileRepository.Add(subjectfile);
+                    var weekFileUrls = new WeekFileUrl
+                    {
+                        WeekId = ids.WeekId,
+                        id= subjectfile.id
+                    };
+                    _weekFileUrlRepository.Add(weekFileUrls);
+                }
 
                 var courseWeek = new CourseWeeks
                 {
@@ -332,19 +385,23 @@ namespace VUA.UI.Areas.Studant.Controllers
                     WeekId = ids.WeekId
                 };
                 _courseWeeksRepository.Add(courseWeek);
+                return RedirectToAction("Contant", new { id = id });
 
-                return RedirectToAction("TeacherCourses");
             }
             return View(model);
         }
-        
+
         public IActionResult Contant(int id)
         {
             
             var courseContant = _courseWeeksRepository.GetValues("Week").Where(c => c.CourseId ==id);
 
+            ViewBag.Videos = _weekVideoUrls.GetValues("Url").Where(wv => wv.WeekId == courseContant.First().WeekId );
+            ViewBag.Files = _weekFileUrlRepository.GetValues("Url").Where(wv => wv.WeekId == courseContant.First().WeekId);
             if (courseContant.Any())
             {
+                ViewBag.coId = id;
+                ViewBag.CoNum = id;
                 return View(courseContant);
             }
             else
@@ -387,15 +444,36 @@ namespace VUA.UI.Areas.Studant.Controllers
             var courseContant = _courseWeeksRepository.GetValues("Week").Where(c => c.CourseId == courseId);
             if (courseContant.Any())
             {
-                return RedirectToAction("Contant", "Dashboard", new { courseId = courseId });
+                return RedirectToAction("Contant", new { id = courseId });
             }
             return RedirectToAction("TeacherCourses");
 
         }
+		[HttpGet]
+		[Authorize(Roles = "Studant")]
+		public IActionResult searchCourses()
+		{
+			return View("AddCourse");
+		}
+		[HttpPost]
+		[Authorize(Roles = "Studant")]
+		public IActionResult searchCourses(string term)
+		{
+			if (term != null)
+			{
+				var courses = _userService.GetCourses();
+				var userId = _userService.GetUserId();
+				var userCourses = _userCourseRepository.GetValues("Course").Where(uc => uc.UserId == userId);
+
+                ViewBag.Course2 = courses.Where(c => !userCourses.Any(uc => uc.CourseId == c.CourseId) && c.InstructorId != "" && c.InstructorId != null && c.CourseName!.Contains(term)).ToList();
+                //ViewBag.Course2 = _cousreRepository.GetAll().Where(c => c.CourseName!.Contains(term)).ToList();
+				return View("AddCourse");
+			}
+			return View("AddCourse");
+        }
 
 
-
-    }
+	}
 
 }
 

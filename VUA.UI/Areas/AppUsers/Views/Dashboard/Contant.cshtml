@@ -75,6 +75,7 @@
     </style>
 </head>
 <body>
+
     @if(user!.StudantOrTeacher == "Studant")
     {
                      <!-- Use asp-for to bind the value to the model property -->
@@ -86,23 +87,30 @@
             </header>
 
             <main>
-
-                <div id="video-container">
-                    <!-- Replace the video URL with your own -->
-                    <video width="640" height="360" controls>
-                        <source src="~/uploads/@item.Week.ViduoUrl" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
+                @foreach (var video in ViewBag.Videos)
+                {
+                    <div id="video-container">
+                        <!-- Replace the video URL with your own -->
+                        <video width="640" height="360" controls>
+                            <source src="~/uploads/@video.Url.UrlString" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                }
+               
                 <h2>Description</h2>
 
 
                 <textarea class="textarea" disabled> @item.Week.Description</textarea>
                
                 <br>
-                <a class="btn btn-block btn-secondary" href="@Url.Content($"~/uploads/{item.Week.Subjectfile}")" download>
-                    Description File
-                </a>
+                @foreach (var file in ViewBag.Files)
+                {
+                    <a class="btn btn-block btn-secondary" href="@Url.Content($"~/uploads/{file.Url.UrlString}")" download>
+                        Description File
+                    </a>
+                } 
+                
             </main>
             <br />
             
@@ -119,33 +127,58 @@
 
             <main>
 
-                <div id="video-container">
-                    <video width="750" height="360" controls>
-                        <source src="~/uploads/@item.Week.ViduoUrl" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-
+                @foreach (var video in ViewBag.Videos)
+                {
+                    <div id="video-container">
+                        <!-- Replace the video URL with your own -->
+                        <video width="640" height="360" controls>
+                            <source src="~/uploads/@video.Url.UrlString" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                }
+ 
                 
                     <h2>Description</h2>
                     <textarea class="textarea" disabled> @item.Week.Description</textarea>
              
                 <br>
-                <a class="btn btn-block btn-secondary" href="@Url.Content($"~/uploads/{item.Week.Subjectfile}")" download>
-                    Description File
-                </a>
+
+                @foreach (var file in ViewBag.Files)
+                {
+                    if (file.Url.UrlString == "")
+                    {
+                        <button class="btn btn-block btn-secondary" href="@Url.Content($"~/uploads/{file!.Url.UrlString}")" disabled>
+                            No Description File
+                        </button>
+                    }
+                    else
+                    {
+                        <a class="btn btn-block btn-primary" href="@Url.Content($"~/uploads/{file.Url.UrlString}")" download>
+                            Description File
+                        </a>
+                    }
+                } 
+                
+               
 
             </main>
 
 
             <a asp-action="DeleteWeek" asp-route-courseId="@item.CourseId" asp-route-weekId="@item.WeekId" class="btn btn-block btn-outline-danger">Delete Week</a>
-
+            
            
             <br />
                 
         }
+        <form method="get" asp-action="Redirect">
+            <input name="Course" type="hidden" value="@ViewBag.CoNum" />
+            <button type="submit" class="btn btn-outline-success btn-block ">ADD Another Week</button>
+        </form>
+        <br />
+            @* <a asp-action="CreateCourseContant" asp-route-id="@ViewBag.CoNum" class="btn btn-outline-success btn-block ">ADD Another Week</a> *@
             <a asp-action="TeacherCourses" class="btn btn-block btn-outline-primary">Back</a>
-
+        
     }
 
 

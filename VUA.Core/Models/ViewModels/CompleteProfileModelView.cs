@@ -11,13 +11,11 @@ namespace VUA.Core.Models.ViewModels
     public class CompleteProfileModelView
     {
       
-        //[Required(ErrorMessage = "Gender is required.")]
-        //public string? Gender { get; set; }
         [Required(ErrorMessage = "Date of Birth is required.")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name = "Date of Birth")]
-        //[Range(18, 60, ErrorMessage = "Age must be between 18 and 60.")]
+        [Range(typeof(DateTime), "1973-01-01", "2005-01-01", ErrorMessage = "Age must be between 18 and 50.")]
         public DateTime? DateOfBirth { get; set; }
         [Display(Name = "Choose Profile picture")]
         [Required]
@@ -38,16 +36,19 @@ namespace VUA.Core.Models.ViewModels
         [Required(ErrorMessage = "ID Number is required.")]
         [RegularExpression(@"^[A-Z0-9]{8,12}$", ErrorMessage = "Please enter a valid ID Number.")]
         public string? IdNumber { get; set; }
+
+
+
         [Required(ErrorMessage = "ID Expiry Date is required.")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name = " ID Expiry Date")]
-        [Range(typeof(DateTime), "2023-01-01", "2033-12-31", ErrorMessage = "Invalid Expiry Date")]
+        [Range(typeof(DateTime), "2023-12-19", "2033-12-31", ErrorMessage = "Invalid Expiry Date", ConvertValueInInvariantCulture = true)]
         public DateTime? ExpiryDate { get; set; }
         [Required(ErrorMessage = "Phone number is required.")]
         [RegularExpression(@"^\d{9,10}$", ErrorMessage = "Please enter a valid phone number.")]
         public string? PhoneNumber { get; set; }
-        [Display(Name = "Choose Profile picture")]
+        [Display(Name = "Choose ID picture")]
         [Required]
         public IFormFile? IdFrontSidePictuer { get; set; }
         public IFormFile? IdBackSidePictuer { get; set; }
