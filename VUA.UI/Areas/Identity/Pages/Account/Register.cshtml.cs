@@ -129,7 +129,7 @@ namespace WebApplication1.Areas.Identity.Pages.Account
 			string selectedValue = Request.Form["options"].ToString();
 			string gender = Request.Form["gender"].ToString();
             string condtions = Request.Form["condtions"].ToString();
-			if (ModelState.IsValid && selectedValue !="" &&
+			if (ModelState.IsValid && selectedValue != "" &&
                 gender !=""
                 && condtions !="")
             {
@@ -182,11 +182,11 @@ namespace WebApplication1.Areas.Identity.Pages.Account
                         }
                         else
                         {
-                            bool isInRole = await _accountRepositories.IsInRoleAsync(user, "HiÇ");
+                            bool isInRole = await _accountRepositories.IsInRoleAsync(user, "Admin");
 
                             if (!isInRole)
                             {
-                                await _accountRepositories.AddUserToRoleAsync(user, "HiÇ");
+                                await _accountRepositories.AddUserToRoleAsync(user, "Admin");
 
                                 return RedirectToAction("Login", "Account", new { area = "Identity" });
                             }

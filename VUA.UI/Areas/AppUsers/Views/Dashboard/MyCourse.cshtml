@@ -35,36 +35,29 @@
                     {
                         var teatcher = _usermanger.FindByIdAsync(course.Course!.InstructorId!).Result;
 
-                            <div class="card  mt-4 mb-4" style="height:350px">
-                                <div class="card-header">
-                                    <h6 class="mb-0 text-bold">@course.Course!.CourseName</h6>
-                                    <p class="text-sm">@course.Course.CourseDescription</p>
-                               
-                                    
-                                </div>
-                                <div class="card-body" style="height:750px; width:700px">
-                                    <h4>Teacher</h4>
+                        <div class="card  mt-4 mb-4" style="height:430px; width:700px">
+                            <div class="card-header">
+                                <h6 class="mb-0 text-bold">@course.Course!.CourseName</h6>
+                                <hr class="dark horizontal">
+                                <p class="text-sm">@course.Course.CourseDescription</p>
+                            </div>
+                            <div class="card-body" >
+                                    <h6>Teacher</h6>
                                     <hr class="dark horizontal">
                                     <a asp-action="">
-                                        <img src="@teatcher!.ProfileImage" alt="avatar"
+                                        <img src="~/@teatcher!.ProfileImage" alt="avatar"
                                              class="rounded-circle img-fluid" style="width: 75px; height:75px">
                                     </a>
                                     <p>@teatcher!.FullName</p>
-                                    
-                                </div>
-                                <div class="card-footer">
-
-
-                                    <a asp-action="DropCourse" asp-route-courseId="@course.CourseId" class="btn btn-outline-danger">Drop</a>
-                                    <a asp-action="Contant" asp-route-id="@course.CourseId" class="btn btn-primary">Continue →</a>
-                               
-
-
-                                    
-                               
-
-                                </div>
+                              
                             </div>
+                            <div class="card-footer">
+
+                                <a asp-action="DropCourse" asp-route-courseId="@course.CourseId" class="btn btn-outline-danger">Drop</a>
+                                <a asp-action="Contant" asp-route-id="@course.CourseId" class="btn btn-primary">Continue →</a>
+                                    
+                            </div>
+                        </div>
 
                     }
                 }

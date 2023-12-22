@@ -23,10 +23,10 @@ namespace VUA.Core.Models.ViewModels
         [Required(ErrorMessage = "Please select country.")]
         public string? City { get; set; }
         [Required(ErrorMessage = "Please write your State.")]
-        [MinLength(4,ErrorMessage = "Very short state name.")]
-        public string? State { get; set; }
-        [Required(ErrorMessage = "Please write your Street Name.")]
         [MinLength(4, ErrorMessage = "Very short state name.")]
+        public string? State { get; set; }
+        [Required(ErrorMessage = "Please write your Address.")]
+        [MinLength(4, ErrorMessage = "Very short Address.")]
         public string? StreetName { get; set; }
         [Required(ErrorMessage = "Postal code is required.")]
         [RegularExpression(@"^\d{5}(-\d{4})?$", ErrorMessage = "Please enter a valid postal code.")]

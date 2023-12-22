@@ -10,7 +10,7 @@
 
     <div class="card">
         <div class="card-body">
-            <img src="~/AcTemp/images/@Model.CourseImage" style="height:200px; width:1065px" />
+            <img src="~/@Model.CourseImage" style="height:200px; width:1065px" />
             
             <div class="row mt-4">
                 <div class="col-sm-3">
@@ -99,7 +99,7 @@
                             <tr>
                                 <td>@teacher!.FullName</td>
                                 <td>@teacher!.UserName</td>
-                                <td><img src="@teacher.ProfileImage" style="height:50px; width:50px" /></td>
+                                <td><img src="~/@teacher.ProfileImage" style="height:50px; width:50px" /></td>
                                 <td><a asp-action="Add_Edit_Instructor" asp-route-id="@Model.CourseId" class="btn btn-primary ">Modify</a></td>
                             </tr>
                         </tbody>

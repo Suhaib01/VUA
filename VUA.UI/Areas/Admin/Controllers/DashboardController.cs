@@ -296,7 +296,7 @@ namespace VUA.UI.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Courses()
         {
-            return View(_courseRepository.GetAll().Where(c => c.CourseId != 1)) ;
+            return View(_courseRepository.GetAll()) ;
         }
         [HttpPost]
         public IActionResult Courses(string term)
@@ -306,7 +306,7 @@ namespace VUA.UI.Areas.Admin.Controllers
                 var result = _courseRepository.GetAll().Where(c => c.CourseName!.Contains(term));
                 return View(result);
             }
-            return View(_courseRepository.GetAll().Where(c => c.CourseId != 1));
+            return View(_courseRepository.GetAll());
         }
 
 

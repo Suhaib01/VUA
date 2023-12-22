@@ -371,20 +371,25 @@ namespace VUA.EF.Migrations
                     b.ToTable("CourseWeeks");
                 });
 
-            modelBuilder.Entity("VUA.Core.Models.FileUrl", b =>
+            modelBuilder.Entity("VUA.Core.Models.File", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("FileId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FileId"));
 
-                    b.Property<string>("UrlString")
+                    b.Property<string>("FileUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("id");
+                    b.Property<int>("WeekId")
+                        .HasColumnType("int");
 
-                    b.ToTable("fileUrls");
+                    b.HasKey("FileId");
+
+                    b.HasIndex("WeekId");
+
+                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("VUA.Core.Models.News", b =>
@@ -514,20 +519,25 @@ namespace VUA.EF.Migrations
                     b.ToTable("UserPayments");
                 });
 
-            modelBuilder.Entity("VUA.Core.Models.ViduoUrl", b =>
+            modelBuilder.Entity("VUA.Core.Models.Video", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("VideoId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VideoId"));
 
-                    b.Property<string>("UrlString")
+                    b.Property<string>("VideoUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("id");
+                    b.Property<int>("WeekId")
+                        .HasColumnType("int");
 
-                    b.ToTable("ViduoUrls");
+                    b.HasKey("VideoId");
+
+                    b.HasIndex("WeekId");
+
+                    b.ToTable("Videos");
                 });
 
             modelBuilder.Entity("VUA.Core.Models.Week", b =>
@@ -553,46 +563,6 @@ namespace VUA.EF.Migrations
                     b.HasKey("WeekId");
 
                     b.ToTable("Weeks");
-                });
-
-            modelBuilder.Entity("VUA.Core.Models.WeekFileUrl", b =>
-                {
-                    b.Property<int>("WeekId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("id")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("FileUrlid")
-                        .HasColumnType("int");
-
-                    b.HasKey("WeekId", "id");
-
-                    b.HasIndex("FileUrlid");
-
-                    b.HasIndex("id");
-
-                    b.ToTable("weekFileUrls");
-                });
-
-            modelBuilder.Entity("VUA.Core.Models.WeekVideoUrls", b =>
-                {
-                    b.Property<int>("WeekId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("id")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ViduoUrlid")
-                        .HasColumnType("int");
-
-                    b.HasKey("WeekId", "id");
-
-                    b.HasIndex("ViduoUrlid");
-
-                    b.HasIndex("id");
-
-                    b.ToTable("weekVideoUrls");
                 });
 
             modelBuilder.Entity("VUA.Core.Models.WhyAcademicsWorks", b =>
@@ -690,6 +660,17 @@ namespace VUA.EF.Migrations
                     b.Navigation("Week");
                 });
 
+            modelBuilder.Entity("VUA.Core.Models.File", b =>
+                {
+                    b.HasOne("VUA.Core.Models.Week", "Week")
+                        .WithMany("Files")
+                        .HasForeignKey("WeekId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Week");
+                });
+
             modelBuilder.Entity("VUA.Core.Models.UserCourse", b =>
                 {
                     b.HasOne("VUA.Core.Models.Course", "Course")
@@ -728,48 +709,13 @@ namespace VUA.EF.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("VUA.Core.Models.WeekFileUrl", b =>
+            modelBuilder.Entity("VUA.Core.Models.Video", b =>
                 {
-                    b.HasOne("VUA.Core.Models.FileUrl", null)
-                        .WithMany("weekFileUrls")
-                        .HasForeignKey("FileUrlid");
-
                     b.HasOne("VUA.Core.Models.Week", "Week")
-                        .WithMany("WeekFileUrls")
+                        .WithMany("Videos")
                         .HasForeignKey("WeekId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("VUA.Core.Models.FileUrl", "Url")
-                        .WithMany()
-                        .HasForeignKey("id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Url");
-
-                    b.Navigation("Week");
-                });
-
-            modelBuilder.Entity("VUA.Core.Models.WeekVideoUrls", b =>
-                {
-                    b.HasOne("VUA.Core.Models.ViduoUrl", null)
-                        .WithMany("WeekVideoUrls")
-                        .HasForeignKey("ViduoUrlid");
-
-                    b.HasOne("VUA.Core.Models.Week", "Week")
-                        .WithMany("WeekVideoUrls")
-                        .HasForeignKey("WeekId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("VUA.Core.Models.ViduoUrl", "Url")
-                        .WithMany()
-                        .HasForeignKey("id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Url");
 
                     b.Navigation("Week");
                 });
@@ -788,28 +734,18 @@ namespace VUA.EF.Migrations
                     b.Navigation("UserCourses");
                 });
 
-            modelBuilder.Entity("VUA.Core.Models.FileUrl", b =>
-                {
-                    b.Navigation("weekFileUrls");
-                });
-
             modelBuilder.Entity("VUA.Core.Models.Payment", b =>
                 {
                     b.Navigation("UserPayments");
-                });
-
-            modelBuilder.Entity("VUA.Core.Models.ViduoUrl", b =>
-                {
-                    b.Navigation("WeekVideoUrls");
                 });
 
             modelBuilder.Entity("VUA.Core.Models.Week", b =>
                 {
                     b.Navigation("CourseWeeks");
 
-                    b.Navigation("WeekFileUrls");
+                    b.Navigation("Files");
 
-                    b.Navigation("WeekVideoUrls");
+                    b.Navigation("Videos");
                 });
 #pragma warning restore 612, 618
         }

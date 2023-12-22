@@ -8,7 +8,7 @@
     var Messages = _messageRepository.GetAll().Where(m=>m.isReplyed ==false&&m.isDeleted==false);
     var PendingStudants = _userManger.GetAll().Where(s =>s.StudantOrTeacher=="Studant" && s.IsCompleted == true && s.IsApprovedUser == false);
     var PendingTeachers = _userManger.GetAll().Where(s => s.StudantOrTeacher == "Teacher" && s.IsCompleted == true && s.IsApprovedUser == false);
-    var Admin = _signInMaanager.UserManager.FindByEmailAsync(User.Identity!.Name!).Result;
+    // var Admin = _signInMaanager.UserManager.FindByEmailAsync(User.Identity!.Name!).Result;
     int Sum = Messages.Count() + PendingStudants.Count() + PendingTeachers.Count();
 }
 <!DOCTYPE html>
@@ -47,7 +47,7 @@
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">@Admin!.FullName</div>
+                @* <div class="sidebar-brand-text mx-3">@Admin!.FullName</div> *@
             </a>
 
             <!-- Divider -->

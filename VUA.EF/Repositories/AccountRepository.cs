@@ -161,7 +161,7 @@ namespace VUA.EF.Repositories
             folderPath += $"{Guid.NewGuid().ToString()}_{file.FileName}";
             string serverFolder = Path.Combine(WebRootPath, folderPath);
             await file.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
-            return "/"+folderPath;
+            return folderPath;
         }
         public async Task<string> UploadVideo(IFormFile model)
         {

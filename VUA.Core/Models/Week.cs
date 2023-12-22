@@ -16,14 +16,13 @@ namespace VUA.Core.Models
         public string? Description { get; set; }
 
         public string? SubjectName { get; set; }
-
-
-        public ICollection<WeekVideoUrls>? WeekVideoUrls { get; set; }
-        public ICollection<WeekFileUrl>? WeekFileUrls { get; set; }
         public string? WhatStudantShouldDo { get; set; }
-		
         public string? EndOfThisWeek { get; set; }
-		public ICollection<CourseWeeks>? CourseWeeks { get; set; }
 
-	}
+        // Navigation properties
+        public ICollection<CourseWeeks>? CourseWeeks { get; set; }
+        public ICollection<Video>? Videos { get; set; }
+        public ICollection<File>? Files { get; set; }
+
+    }
 }

@@ -85,10 +85,8 @@ namespace WebApplication1.Areas.Identity.Pages.Account
 
             [Required]
             public string FirstName { get; set; }
-            [Required]
             public string StudantOrTeacher { get; set; }
 
-            [Required]
             public string Gender { get; set; }
 
             /// <summary>
@@ -169,22 +167,28 @@ namespace WebApplication1.Areas.Identity.Pages.Account
                 ErrorMessage = "Error loading external login information during confirmation.";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
-			string selectedValue = Request.Form["options"].ToString();
-			string gender = Request.Form["gender"].ToString();
-			string condtions = Request.Form["condtions"].ToString();
-			if (ModelState.IsValid && selectedValue != "" &&
-				gender != ""
-				&& condtions != "")
-			{
-			
-         
+            //string selectedValue = Request.Form["options"].ToString();
+            //string gender = Request.Form["gender"].ToString();
+            //string condtions = Request.Form["condtions"].ToString();
+            //if (ModelState.IsValid && selectedValue != "" &&
+            //	gender != ""
+            //	&& condtions != "")
+            //{
+            string selectedValue = Request.Form["options"].ToString();
+            string gender = Request.Form["gender"].ToString();
+            string condtions = Request.Form["condtions"].ToString();
+            if (ModelState.IsValid && selectedValue != "" &&
+                gender != ""
+                && condtions != "")
+            {
+
                 var user = CreateUser();
                 user.Gender = gender;
                 user.StudantOrTeacher = selectedValue;
                 user.IsCompleted = false;
-               // user.IsExternalUser =true;
+                user.IsExternal = "true";
                 user.FullName =Input.FirstName;
-                user.StudantOrTeacher = Input.StudantOrTeacher;
+                //user.StudantOrTeacher = Input.StudantOrTeacher;
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 

@@ -23,6 +23,7 @@ namespace VUA.EF.Repositories
             return valluse;
         }
 
+
         public void Add(T entity)
         {
             _db.Set<T>().Add(entity);

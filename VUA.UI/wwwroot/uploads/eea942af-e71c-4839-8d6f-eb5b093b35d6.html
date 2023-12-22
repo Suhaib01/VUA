@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show Form on Button Click</title>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <style>
+        /* Hide the form by default */
+        #myForm {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Button to show the form -->
+    <button id="showFormBtn">Show Form</button>
+
+    <!-- Your form -->
+    <form id="myForm">
+        <!-- Your form fields go here -->
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name">
+        <!-- Add other form fields as needed -->
+
+        <br>
+
+        <input type="submit" value="Submit">
+    </form>
+
+    <script>
+        // jQuery script to toggle the form visibility on button click
+        $(document).ready(function(){
+            // When the button is clicked
+            $("#showFormBtn").click(function(){
+                // Toggle the visibility of the form
+                $("#myForm").toggle();
+            });
+        });
+    </script>
+
+</body>
+</html>

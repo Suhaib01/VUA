@@ -18,18 +18,18 @@ namespace VUA.EF.Repositories.Service
         private readonly IConfiguration _configuration;
         private readonly SMTPConfigration _smtpConfigration;
 
-        public async Task SendtestEmail(UserEmailOptions useremailOptions)
-        {
-            useremailOptions.Subject = "This is test email subject from VUA";
-            useremailOptions.Body = GetEmailBody("EmailConfirm");
-            await SendEmail(useremailOptions);
-        }
-        public async Task SendEmailForConfirmation(UserEmailOptions useremailOptions)
-        {
-            useremailOptions.Subject =UpdatePlaceHolders("Hello{{UserName}} This is test email subject from VUA" , useremailOptions.PlaceHolders!);
-            useremailOptions.Body = UpdatePlaceHolders(GetEmailBody("EmailConfirm"),useremailOptions.PlaceHolders!);
-            await SendEmail(useremailOptions);
-        }
+        //public async Task SendtestEmail(UserEmailOptions useremailOptions)
+        //{
+        //    useremailOptions.Subject = "This is test email subject from VUA";
+        //    useremailOptions.Body = GetEmailBody("EmailConfirm");
+        //    await SendEmail(useremailOptions);
+        //}
+        //public async Task SendEmailForConfirmation(UserEmailOptions useremailOptions)
+        //{
+        //    useremailOptions.Subject =UpdatePlaceHolders("Hello{{UserName}} This is test email subject from VUA" , useremailOptions.PlaceHolders!);
+        //    useremailOptions.Body = UpdatePlaceHolders(GetEmailBody("EmailConfirm"),useremailOptions.PlaceHolders!);
+        //    await SendEmail(useremailOptions);
+        //}
         public EmailService(IConfiguration configuration,
             SMTPConfigration smtpConfigration)
         {
@@ -75,11 +75,11 @@ namespace VUA.EF.Repositories.Service
             }
             
         }
-        private string GetEmailBody(string templateName)
-        {
-            var body = File.ReadAllText(string.Format(templatePath, templateName));
-            return body;
-        }
+        //private string GetEmailBody(string templateName)
+        //{
+        //    var body =Core.Models.File.ReadAllText(string.Format(templatePath, templateName));
+        //    return body;
+        //}
         private string UpdatePlaceHolders(string text, List<KeyValuePair<string,string>> keyValuePairs)
         {
             if (!string.IsNullOrEmpty(text) && keyValuePairs!=null)

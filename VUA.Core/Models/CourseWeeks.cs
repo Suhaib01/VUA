@@ -12,5 +12,6 @@ namespace VUA.Core.Models
 		public Course? Course { get; set; }
 		public int WeekId { get; set; }
 		public Week? Week { get; set; }
-	}
+
+    }
 }
