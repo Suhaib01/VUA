@@ -14,8 +14,6 @@
 
 	<ItemGroup>
 
-		<Folder Include="wwwroot\uploads\Courses\" />
-
 		<Folder Include="wwwroot\uploads\ProfilsPuctuers\Id\" />
 
 		<Folder Include="wwwroot\uploads\Videos\" />

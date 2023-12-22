@@ -14,7 +14,7 @@ namespace VUA.UI.ViewComponentes
         }
         public  IViewComponentResult Invoke()
         {
-            var courses=   _CourseRepository.GetAll().Where(x=>x.CourseId != 1);
+            var courses=   _CourseRepository.GetAll();
             return View(courses);
         }
     }
